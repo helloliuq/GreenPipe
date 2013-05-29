@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 1.1//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+<hibernate-mapping package="org.uc.sidgrid.social">
+<class name="org.uc.sidgrid.social.Group" table="GROUPS">
+     <id name="Id" column="id" type="long">
+        <generator class="native"/>
+     </id>
+     <property name="name" column="name" />
+     <property name="owner" column="owner" />
+     <set name="users" table="USER_GROUPS" >
+        <key column="group_id" />
+        <many-to-many  class="org.uc.sidgrid.app.User" column="USER" />
+     </set>
+     
+     <set name="exps" table="EXPERIMENT_GROUPS" >
+        <key column="group_id" />
+        <many-to-many  class="org.uc.sidgrid.data.Experiment" column="experiment_id" />
+ 
+     </set>
+</class>
+</hibernate-mapping>
