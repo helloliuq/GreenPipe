@@ -1,0 +1,341 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="language" content="en" />
+
+	<title>Layout with Accordion 1.7.1</title>
+
+	<link rel="stylesheet" type="text/css" href="css/accordion.css" />
+	<link rel="stylesheet" type="text/css" href="../lib/css/layout-default-latest.css" />
+	        <LINK rel="stylesheet" type="text/css" href="css/themes/base/ui.core.css">
+        <LINK rel="stylesheet" type="text/css" href="css/themes/base/ui.tabs.css">
+        <LINK rel="stylesheet" type="text/css" href="css/themes/base/ui.all.css">
+        <LINK rel="stylesheet" type="text/css" href="css/ui-1.7.1-demos.css">
+        <LINK rel="stylesheet" type="text/css" href="css/layout-default.css">
+
+
+<!-- CUSTOMIZE/OVERRIDE THE DEFAULT CSS -->
+	<style type="text/css">
+
+	/* remove padding and scrolling from elements that contain an Accordion OR a content-div */
+	.ui-layout-center ,	/* has content-div */
+	.ui-layout-west ,	/* has Accordion */
+	.ui-layout-east ,	/* has content-div ... */
+	.ui-layout-east .ui-layout-content { /* content-div has Accordion */
+		padding: 0;
+		overflow: hidden;
+	}
+	.ui-layout-center P.ui-layout-content {
+		line-height:	1.4em;
+		margin:			0; /* remove top/bottom margins from <P> used as content-div */
+	}
+	h3, h4 { /* Headers & Footer in Center & East panes */
+		font-size:		1.1em;
+		background:		#EEF;
+		border:			1px solid #BBB;
+		border-width:	0 0 1px;
+		padding:		7px 10px;
+		margin:			0;
+	}
+	.ui-layout-east h4 { /* Footer in East-pane */
+		font-size:		0.9em;
+		font-weight:	normal;
+		border-width:	1px 0 0;
+	}
+	</style>
+
+
+        <STYLE type="text/css">
+
+                /*
+                 *      TAB-THEME ADJUSTMENTS
+                 */
+                .ui-tabs-nav li {
+                        white-space:    nowrap;
+                }
+                .ui-tabs-nav li a {
+                        font-size:              1em !important;
+                        padding:                4px 1.5ex 3px !important;
+                }
+                .ui-tabs-panel {
+                        font-size:              1em !important;
+                        padding:                0 1em !important;
+                }
+
+                /*
+                 *      WEST-PANE TABS
+                 *
+                 *      These tabs 'fill' the pane,
+                 *      so the pane-border acts as the tab-border
+                 */
+                .ui-layout-pane-west {
+                        padding:        0;
+                        }
+                        .ui-layout-pane-west .ui-tabs-nav {
+                                /* don't need border or rounded corners - tabs 'fill' the pane */
+                                border-top:             0;
+                                border-left:    0;
+                                border-right:   0;
+                                padding-bottom: 0 !important;
+                                -moz-border-radius:             0;
+                                -webkit-border-radius:  0;
+                        }
+
+         </STYLE>
+
+
+        <SCRIPT type="text/javascript" src="js/jquery-1.3.2.js"></SCRIPT>
+        <!--
+        <SCRIPT type="text/javascript" src="js/ui-1.7.1.custom.js"></SCRIPT>
+        -->
+        <SCRIPT type="text/javascript" src="js/ui-1.7.1/ui.core.js"></SCRIPT>
+        <SCRIPT type="text/javascript" src="js/ui-1.7.1/ui.tabs.js"></SCRIPT>
+        <SCRIPT type="text/javascript" src="js/ui-1.7.1/ui.sortable.js"></SCRIPT>
+
+        <!-- using a beta Layout version because contains some bug-fixes relevant to this page  -
+->
+        <SCRIPT type="text/javascript" src="jquery.layout_1.2.2beta.js"></SCRIPT>
+        <SCRIPT type="text/javascript" src="js/ui-1.7.1/ui.draggable.js"></SCRIPT>
+        <SCRIPT type="text/javascript" src="js/ui-1.7.1/effects.core.js"></SCRIPT>
+        <SCRIPT type="text/javascript" src="js/ui-1.7.1/effects.slide.js"></SCRIPT>
+
+        <SCRIPT type="text/javascript">
+
+                $(document).ready( function() {
+
+                        // TABS-WEST - sortable
+                        $(".ui-layout-west-tabs")
+                                .tabs()
+                                .find(".ui-tabs-nav")
+                                        .sortable({ axis: 'x', zIndex: 2 })
+                        ;
+
+                        // TABS-EAST - sortable
+                        $(".ui-layout-east")
+                                .tabs()
+                                .find(".ui-tabs-nav")
+                                        .sortable({ axis: 'x', zIndex: 2 })
+                        ;
+
+                        // TABS-CENTER - sortable
+                        $(".ui-layout-center")
+                                .tabs({
+                                        change: function () {  }
+                                })
+                                .find(".ui-tabs-nav")
+                                        .sortable({ axis: 'x', zIndex: 2 })
+                        ;
+
+                        // PAGE LAYOUT
+                        $('body').layout({
+                                west__size:                     $('body').innerWidth() * 0.4
+                        ,       east__size:                     200
+                        ,       south__initClosed:      true
+                        });
+
+                });
+
+        </SCRIPT>
+
+
+	<!-- REQUIRED scripts for layout widget -->
+	<script type="text/javascript" src="../lib/js/jquery-1.3.2.js"></script>
+	<script type="text/javascript" src="../lib/js/jquery-ui-1.7.2.js"></script>
+	<script type="text/javascript" src="../lib/js/jquery.layout-1.3.rc5.js"></script>
+	<script type="text/javascript" src="../lib/js/debug.js"></script>
+
+	<script type="text/javascript">
+
+	var myLayout; // init global vars
+
+	$(document).ready( function() {
+
+		myLayout = $('body').layout({
+			west__size:			300
+		,	east__size:			300
+			// RESIZE Accordion widget when panes resize
+		,	west__onresize:		function () { $("#accordion1").accordion("resize"); }
+		,	east__onresize:		function () { $("#accordion2").accordion("resize"); }
+		});
+
+		// ACCORDION - in the West pane
+		$("#accordion1").accordion({
+			fillSpace:	true
+		});
+		
+		// ACCORDION - in the East pane - in a 'content-div'
+		$("#accordion2").accordion({
+			fillSpace:	true
+		,	active:		1
+		});
+
+	});
+
+	</script>
+
+</head>
+<body>
+
+<div class="ui-layout-north" style="display: none;"> North Pane </div>
+
+<div class="ui-layout-south" style="display: none;"> South Pane </div>
+
+<div class="ui-layout-center" style="display: none;"> 
+	<h3>Center Pane</h3>
+	<p class="ui-layout-content">
+		<b>NOTE</b>: As of UI v1.7.1, the Accordion widget has a 'resize' method.
+		If you were previously using the patched version of ui.accordion, 
+		you should upgrade to the latest versions of jQuery and jQuery UI.
+	</p>
+
+
+
+
+
+
+
+
+
+
+
+
+<DIV class="ui-layout-west-tabs">        <UL>                <LI><A href="#tabs-west-1">Nunc tincidunt</A></LI>                <LI><A href="#tabs-west-2">Proin dolor</A></LI>
+                <LI><A href="#tabs-west-3">Aenean lacinia</A></LI>        </UL>        <!-- add wrapper that Layout will auto-size to 'fill space' -->        <DIV class="ui-layout-content">                <DIV id="tabs-west-1">                        <P>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulpu
+tate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non an
+te. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce soda
+les. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</P>                        <P>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maece
+nas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</P>
+                </DIV>
+                <DIV id="tabs-west-2">                        <P>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellent
+esque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu orna
+re leo nisi vel felis. Mauris consectetur tortor et purus.</P>
+                </DIV>
+                <DIV id="tabs-west-3">                        <P>Proin elit arcu, rutrum commodo, vehicula tempus, commodo a, risus. Curabitur n
+ec arcu. Donec sollicitudin mi sit amet mauris. Nam elementum quam ullamcorper ante. Etiam aliquet massa e
+t lorem. Mauris dapibus lacus auctor risus. Aenean tempor ullamcorper leo. Vivamus sed magna quis ligula e
+leifend adipiscing. Duis orci. Aliquam sodales tortor vitae ipsum. Aliquam nulla. Duis aliquam molestie er
+at. Ut et mauris vel pede varius sollicitudin. Sed ut dolor nec orci tincidunt interdum. Phasellus ipsum. 
+Nunc tristique tempus lectus.</P>
+                </DIV>
+        </DIV><!--- END content-body --->
+        <DIV class="ui-state-default" style="padding: 3px 5px 5px; text-align: center;"
+        onMouseOver="$(this).addClass('ui-state-hover')" onMouseOut="$(this).removeClass('ui-state-hover')
+">
+                Footer for the West-pane
+        </DIV>
+</DIV>
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+<div class="ui-layout-west" style="display: none;">
+	<div id="accordion1" class="basic">
+
+			<a href="#">Section 1</a>
+			<div>
+				<p>Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. 
+					Integer ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit amet, nunc.</p>
+				<p>Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut odio. Curabitur malesuada. 
+					Vestibulum a velit eu ante scelerisque vulputate.</p>
+			</div>
+
+			<a href="#">Section 2</a>
+			<div>
+				<p style="font-weight: bold;">Sed Non Urna</p>
+				<p>Donec et ante. Phasellus eu ligula. Vestibulum sit amet purus.
+					Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor velit,
+					faucibus interdum tellus libero ac justo.</p>
+				<p>Vivamus non quam. In suscipit faucibus urna.</p>
+			</div>
+
+			<a href="#">Section 3</a>
+			<div>
+				<p>Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis.
+					Phasellus pellentesque purus in massa. Aenean in pede.</p>
+				<p>Phasellus ac libero ac tellus pellentesque semper. Sed ac felis. Sed commodo, 
+					magna quis lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui.</p>
+				<ul>
+					<li>List item one</li>
+					<li>List item two</li>
+					<li>List item three</li>
+				</ul>
+			</div>
+
+			<a href="#">Section 4</a>
+			<div>
+				<p>Cras dictum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames 
+					ac turpis egestas.</p>
+				<p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;
+					Aenean lacinia mauris vel est.</p>
+				<p>Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus.
+					Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+			</div>
+
+	</div>
+</div>
+
+<div class="ui-layout-east" style="display: none;">
+	<h3>East Pane</h3>
+
+	<div class="ui-layout-content">
+		<div id="accordion2" class="basic">
+
+			<a href="#">Section 1</a>
+			<div>
+				<p>Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. 
+					Integer ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit amet, nunc.</p>
+				<p>Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut odio. Curabitur malesuada. 
+					Vestibulum a velit eu ante scelerisque vulputate.</p>
+			</div>
+
+			<a href="#">Section 2</a>
+			<div>
+				<p style="font-weight: bold;">Sed Non Urna</p>
+				<p>Donec et ante. Phasellus eu ligula. Vestibulum sit amet purus.
+					Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor velit,
+					faucibus interdum tellus libero ac justo.</p>
+				<p>Vivamus non quam. In suscipit faucibus urna.</p>
+			</div>
+
+			<a href="#">Section 3</a>
+			<div>
+				<p>Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis.
+					Phasellus pellentesque purus in massa. Aenean in pede.</p>
+				<p>Phasellus ac libero ac tellus pellentesque semper. Sed ac felis. Sed commodo, 
+					magna quis lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui.</p>
+				<ul>
+					<li>List item one</li>
+					<li>List item two</li>
+					<li>List item three</li>
+				</ul>
+			</div>
+
+			<a href="#">Section 4</a>
+			<div>
+				<p>Cras dictum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames 
+					ac turpis egestas.</p>
+				<p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;
+					Aenean lacinia mauris vel est.</p>
+				<p>Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus.
+					Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+			</div>
+
+		</div>
+	</div>
+
+	<h4>Accordion inside DIV.ui-layout-content</h4>
+</div>
+
+</body>
+</html> 

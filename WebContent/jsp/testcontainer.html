@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Test OpenSocial Gadget</title>
+<!-- default container look and feel -->
+<link rel="stylesheet" href="../css/gadgets.css">
+<script type="text/javascript" src="http://shindig.serveftp.org:8080/gadgets/js/core:rpc?debug=1"></script>
+<script type="text/javascript" src="../js/shindig/cookies.js"></script>
+<script type="text/javascript" src="../js/shindig/util.js"></script>
+<script type="text/javascript" src="../js/shindig/gadgets.js"></script>
+<script type="text/javascript" src="../js/shindig/cookiebaseduserprefstore.js"></script>
+<script type="text/javascript">
+
+//var specUrl0 = 'http://www.labpixies.com/campaigns/todo/todo.xml';
+//var specUrl0 = 'http://cbc.lac.uic.edu:8080/gadgets/runclustalw-no-wwj1.xml';
+var curGadget;
+function init() {
+  gadgets.container.layoutManager = new gadgets.FloatLeftLayoutManager('gadget-parent');
+  //var gadget = gadgets.container.createGadget({specUrl: specUrl0, width:500, height:500});
+  //gadgets.container.addGadget(gadget);
+};
+function changeGadgetUrl() {
+   var gadgetUrl = document.getElementById("gadgetUrl").value;
+  // get the user preference
+  var width = document.getElementById("gadgetWidth").value;
+  var height = document.getElementById("gadgetHeight").value;
+  if (width== undefined){
+    width = 500;
+  }
+  if (height== undefined){
+    height = 500;
+  }
+  var gadget = gadgets.container.createGadget({specUrl: gadgetUrl, width:width, height:height});
+  // remove the old gadgets in the container
+  for (var tmp in gadgets.container.gadgets_) {
+    var chrome= document.getElementById(tmp);
+    chrome.parentNode.removeChild(chrome);
+  }
+  gadgets.container.gadgets_ = {};
+  gadgets.container.addGadget(gadget);
+  // render the gadget
+  //var gadget = gadgets.container.getGadget(0);
+  renderGadgets();
+  curGadget = gadget;
+  var gadgetCode = document.getElementById("gadget-link");
+  gadgetCode.value = "";
+}
+function renderGadgets() {
+  gadgets.container.renderGadgets();
+};
+function getGadgetCode() {
+  //var div = document.getElementById("gadget_"+curGadget.id);
+  var div = document.getElementById("gadget-parent");
+  var giframe = document.getElementById("remote_iframe_"+curGadget.id);
+  var gadgetCode = document.getElementById("gadget-link");
+  gadgetCode.value= "<link rel=\"stylesheet\" href=\"http://gw25.quarry.iu.teragrid.org/testcontainer/gadgets.css\">"+div.innerHTML;
+  //gadgetCode.value = giframe.contentDocument.innerHTML;
+}
+</script>
+</head>
+<body onLoad="init();renderGadgets()">
+  <h2>Test OpenSocial Gadget</h2>
+  Displaying gadget: <br>
+  <input type="text" size="75" id="gadgetUrl"/>
+  <input type="button" value="reset all" onclick="changeGadgetUrl();"/>
+  <input type="button" value="get the code" onclick="getGadgetCode();"/>
+
+  <table>
+  <tbody>
+  <tr>
+    <td><div id="gadget-parent" class="gadgets-gadget-parent"></div></td>
+    <td>
+     <table cellpadding="0" border="0">
+      <tbody>
+        <tr><td>Width</td><td> <input type="text" size="10" id="gadgetWidth" /></td></tr>
+        <tr><td>Height</td><td> <input type="text" size="10" id="gadgetHeight" /></td></tr>
+        <tr><td colspan="2"> 
+        <div id="gadget-code" class="gadgets-gadget-parent">
+          <div class="gadgets-gadget-chrome" style="float: left;">
+            <textarea id="gadget-link" value="Show gadget code" rows="10" cols="50"/>
+          </div>
+        </div>
+        </td>
+        <tr>
+       </tbody>
+     </table>
+   </td>
+  </tr>
+  </tbody>
+  </table>
+
+</body>
+</html>
