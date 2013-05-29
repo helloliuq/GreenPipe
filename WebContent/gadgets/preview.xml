@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="Results Preview" scrolling="true" height="800px">
+<Require feature="opensocial-0.8" />
+<Require feature="views"/>
+<Require feature="dynamic-height"/>
+<Require feature="pubsub"/>
+</ModulePrefs>
+<Content type="html">
+<![CDATA[
+<style>
+  		.example {
+	  	  float: left;
+		  margin: 15px;
+		}
+
+
+		P.note {
+			color: #999;
+			clear: both;
+		}
+        .label {
+            width:200;
+            float:left;
+        }
+        .sw-header {
+            font-size:14px;
+            font-weight:normal !important;
+        }
+
+        td {
+            font-size:12px;
+
+        }
+
+tr.alt td { background:#ecf6fc; }
+tr.over td { background:#bcd4ec; }
+
+ /*               table,th,td
+                {
+                    border:1px solid gray;
+                    border-collapse:collapse;
+                }
+*/
+
+</style>
+<script type="text/javascript" src="../js/jsonrpc.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+<link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/cupertino/jquery-ui.css" rel="stylesheet" />
+<script type="text/javascript" src="http://gsgd.co.uk/sandbox/jquery/easing/jquery.easing.1.3.js"></script>
+<script type="text/javascript" src="../js/jquery.csv2table-0.02-b-2.8.js"></script>
+<script type="text/javascript" src="../js/jqueryFileTree.js"></script>
+<link href="/GreenPipe/css/jqueryFileTree.css" rel="stylesheet" type="text/css" media="screen" />
+
+<script type="text/javascript">
+//gadgets.window.adjustHeight = function() {} 
+
+    var jsonrpc;
+    var loadingHtml = "<img src='/GreenPipe/images/loading.gif'>Loading..."
+    var alertHtml = '<div style="padding: 0pt 0.7em;width:300px;padding:5px;margin:5px" class="ui-state-highlight ui-corner-all"> <p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span> <strong>Alert:</strong>Error retrieving results.</p> </div>'
+
+    function rpc_callback(rpc_response){
+    }
+    function sub_callback(sender, message){
+         $('#fileinfo_panel').html("");
+         $('#filepreview_panel').html("");
+         document.getElementById("images").innerHTML = ""
+         $('#argsTable').find('tr').remove()
+         $('#statusTable').find('tr').remove()
+         $('#infoTable').find('tr').remove()
+         messageparts = message.split(',')
+         user = messageparts[0]
+         wfdir = messageparts[1]
+         wfdirparts = wfdir.split('/')
+         wfid = wfdirparts.pop()
+
+         var args = jsonrpc.WorkflowService.getArgs(user,wfid);
+//console.log("args = " + args.toSource() );
+         $('#argsTable').find('tr').remove()
+         $.each(args['list'], function(index,value) { 
+           $('#argsTable > tbody:last').append('<tr><td>' + value.description + ' (' + value.name + ')</td><td>' + value.value + '</td></tr>'); 
+         } ) ;
+
+         var wf = jsonrpc.WorkflowService.getWorkflow(user,wfid);
+//console.log("wf = " + wf.toSource() )
+         $('#statusTable').find('tr').remove()
+         $('#statusTable > tbody:last').append('<tr><td>Total jobs</td><td>' + wf.totalJobs + '</td></tr>');
+         $('#statusTable > tbody:last').append('<tr><td>Queued jobs</td><td>' + wf.queuedJobs + '</td></tr>');
+         $('#statusTable > tbody:last').append('<tr><td>Active jobs</td><td>' + wf.activeJobs + '</td></tr>');
+         $('#statusTable > tbody:last').append('<tr><td>Finished jobs</td><td>' + wf.finishedJobs + '</td></tr>');
+         $('#status').html(wf.status);
+
+
+         $('#infoTable').find('tr').remove()
+         $('#infoTable > tbody:last').append('<tr><td>ID</td><td>' + wf.workflowID.split('-').pop() + '</td></tr>');
+         $('#infoTable > tbody:last').append('<tr><td>Created</td><td>' + wf.createTime + '</td></tr>');
+         $('#infoTable > tbody:last').append('<tr><td>Finished</td><td>' + wf.finishTime + '</td></tr>');
+         $('#infoTable > tbody:last').append('<tr><td>User</td><td>' + wf.creator + '</td></tr>');
+         $('#infoTable > tbody:last').append('<tr><td>Application</td><td>' + wf.script.split('/').pop() + '</td></tr>');
+
+         $("#infoTable tr:even").addClass("alt");
+         $("#argsTable tr:even").addClass("alt");
+         $("#statusTable tr:even").addClass("alt");
+
+
+         wfdir_results = "/GreenPipe/jsp/visualize.jsp?dir="+wfdir;
+         //document.getElementById("images").innerHTML = loadingHtml;
+         $("#images").html(loadingHtml)
+         $.ajax({
+                         type:"GET",
+                         url:wfdir_results,
+                         dataType: "html",
+                         success:
+                                         function(data, status)
+                                         {
+                                          data = data.replace(/^\s*|\s*$/g,'')
+                                          var patt=/find the output.xml file/g;
+                                          var result=patt.test(data);
+                                          //var result=false;
+                                          if( result == true ) {
+                                              document.getElementById('images').innerHTML = alertHtml
+                                          }
+                                          else {
+
+                                              // 100802 turam - using jquery to load the data makes the embedded js get executed, including doing csv2table, but it also breakes the jqueryFileTree
+                                              //$('#images').html(data);
+                                              document.getElementById('images').innerHTML = data
+                                          }
+                                          gadgets.window.adjustHeight();
+                                         },
+                        error: function(r,t,e) { 
+                                    console.log("Error thrown" + r + t + e); 
+                                   $('#images').html(alertHtml);
+                                   gadgets.window.adjustHeight();
+                                }                       
+                        });
+                         
+
+$('#fileTreeDemo_1').html('')
+try {
+       $('#fileTreeDemo_1').fileTree({ root: wfdir, script: '/GreenPipe/jsp/jqueryFileTree.jsp' }, function(file) {
+           showFileInfo(file);
+        });
+} catch(err) { 
+ 
+}
+
+
+ gadgets.window.adjustHeight();
+
+
+    }
+    var DefaultInputDir = '/gpfs/pads/oops/scienceportal/apache-tomcat-5.5.27/webapps../oops.input'
+    var xhr = null;
+
+    function showFileInfo(file){
+         gadgets.pubsub.publish("fileselect", file);
+                  var result = jsonrpc.FileService.readFileInfo(file);
+                  var fileinfo = document.getElementById("fileinfo_panel");
+                  fileinfo.innerHTML = "File: "+result.name.replace(/\\/g,'/').replace( /.*\//, '' );;
+                  fileinfo.innerHTML += "<br>Created: "+result.createTime;
+                  fileinfo.innerHTML += "<br>Size: "+result.fileSize+" bytes";
+                  fileinfo.innerHTML += "<br><a href='"+result.download+"' class='ui-corner-all'>Download</a>";
+
+                  $('#fileinfo_panel').html( "<div style='float:left;padding:2px'><strong>"+result.name.replace(/\\/g,'/').replace( /.*\//, '' ) + "</strong> (" + result.createTime + ", " + result.fileSize + " bytes) </div><div style='float:left;padding:2px;' class='ui-state-default ui-corner-all'><a href='"+result.download+"'>Download</a></div><div style='clear:both'></div>")
+                  $('#filepreview_panel').html(loadingHtml);
+                  
+                      
+                  var previewUrl =  '/GreenPipe/jsp/previewFile.jsp?dir=' + file
+                  if( xhr != null )
+                     xhr.abort();
+                  xhr = $.ajax({                         
+                        type:"GET",          
+                        url: previewUrl,
+                        dataType: "html",
+                        success:
+                        function(data, status)
+                        {
+                            $('#filepreview_panel').html(data);
+                            xhr = null;
+gadgets.window.adjustHeight();
+                        }
+                  });
+
+
+
+
+    }
+
+    function getDir_callback(value){
+      if ( value != null && value != ""){
+          //document.getElementById("workflow_info").innerHTML = infohtml;
+
+         wfdir_results = "/GreenPipe/jsp/visualize.jsp?dir="+value;
+         //document.getElementById("images").innerHTML = "";
+         try {
+               $('#fileTreeDemo_1').fileTree({ root: value, script: '/GreenPipe/jsp/jqueryFileTree.jsp' }, function(file) {
+                   showFileInfo(file);
+                });
+         } catch(err) { 
+           if(console) console.log("Error calling fileTree: " + err )
+         }
+         gadgets.window.adjustHeight();
+         document.getElementById("images").innerHTML = loadingHtml;
+         $.ajax({
+                         type:"GET",
+                         url: wfdir_results,
+                         dataType: "html",
+                         success:
+                                         function(data, status)
+                                         { 
+                                          //console.log("got data: " + data );
+                                          var patt=/find the output.xml file/g;
+                                          var result=patt.test(data);
+                                          //console.log("result = " + result );
+                                          if( result == true )
+                                              $('#images').html(alertHtml);
+                                          else
+                                              $('#images').html(data);
+
+                                          //console.log("adjusting height");
+                                           gadgets.window.adjustHeight();
+                                         },
+                        error: function(r,t,e) {
+                                    console.log("Error thrown" + r + t + e);
+                                   $('#images').html(alertHtml);
+                                   gadgets.window.adjustHeight();
+                                }
+
+                        });
+
+      }
+    }
+
+    function initContext(){
+        jsonrpc = new JSONRpcClient("/GreenPipe/Old-JSON-RPC");
+        gadgets.rpc.setRelayUrl('..', '/rpc_relay.html', false);
+        gadgets.rpc.register('callback',rpc_callback);
+        gadgets.pubsub.subscribe("wfselect", sub_callback);
+        // check whether the container has a current_run_folder set
+        gadgets.rpc.call(null, "getCurWfDir", getDir_callback);
+     //setTimeout(function() { gadgets.rpc.call(null,"getCurWfDir",getDir_callback); }, 1000); 
+       var dirname = "" // DefaultInputDir
+try {
+       $('#fileTreeDemo_1').fileTree({ root: dirname, script: '/GreenPipe/jsp/jqueryFileTree.jsp' }, function(file) {
+           showFileInfo(file);
+        });
+} catch(err) { 
+  if(console) console.log("Error calling fileTree: " + err.description )
+}
+
+    }
+
+    gadgets.util.registerOnLoadHandler(initContext);
+
+
+    function subscribe() {
+        gadgets.pubsub.subscribe("wfselect",sub_callback)
+    }
+
+    var filebrowserVisible = false;
+    function showhidefilebrowser()
+    {
+        filebrowserVisible = !filebrowserVisible;
+        if( filebrowserVisible == true )
+        {
+            $('#showfileslink').html('hide')
+            $('#filebrowsercontent').show();
+        }
+        else
+        {
+            $('#showfileslink').html('show')
+            $('#filebrowsercontent').hide();
+        }
+ gadgets.window.adjustHeight();
+        
+
+    }
+
+</script>
+
+    <div id="workflow_info" style="width:auto;padding:3px;margin-left:2px"></div>
+    <div class="ui-widget" style="padding:3px;width:32%;float:left;"><div class="sw-header ui-widget-header">Info</div><div id="info" class="ui-widget-content"><table class="stripeMe" id="infoTable" style="width:100%"><tbody></tbody></table></div></div>
+    <div class="ui-widget" style="padding:3px;width:32%;float:left;"><div class="sw-header ui-widget-header">Parameters</div><div id="args" class="ui-widget-content"><table class="stripeMe" id="argsTable" style="width:100%"><tbody></tbody></table></div></div>
+    <div class="ui-widget" style="padding:3px;width:32%;float:left"><div class="sw-header ui-widget-header">Status:  <span id="status"></span></div><div id="args" class="ui-widget-content"><table class="stripeMe" id="statusTable" style="width:100%" ><tbody></tbody></table></div></div>
+    <div style="clear:both"></div>
+
+
+<div id="filebrowserdiv" class="ui-widget" style="margin:10px 2px;padding:3px">
+  <div id="filebrowser" class="sw-header ui-widget-header">
+    <div style="float:left">Files - <a href="javascript:showhidefilebrowser()" id="showfileslink">show</a></div>
+    <div style="clear:both"></div>
+  </div>
+  <div id="filebrowsercontent" class="ui-widget-content" style="display:none">
+        <div id="fileTreeDemo_1" class="example" style="float:left;width:25%:display:none"></div>
+        <div style="float:left;width:70%" class="ui-corner-all">
+            <div id="fileinfo_panel" class="demo ui-corner-all" style="white-space:pre;width:100%;font-size:12px;margin:25px 0;"></div>
+            <div id="filepreview_panel" class="demo" style="width:100%;font-size:10pt"></div>
+        </div>
+        <div style="clear:both"></div>
+  </div>
+  <div style="clear:both"></div>
+</div>
+
+</div>
+<div class="ui-widget" style="padding:3px;margin:10px 2px">
+  <div class="sw-header ui-widget-header">Output</div>
+  <div class="ui-widget-content" style="height:800px">
+    <div id="images"></div>
+    <div style="clear:both"></div>
+  </div>
+</div>
+<div style="clear:both"></div>
+]]>
+</Content>
+</Module>
+

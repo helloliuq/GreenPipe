@@ -1,0 +1,239 @@
+.form {
+   font-size: 80%;
+   display:none;
+}
+
+fieldset {
+	width:98%; 
+	margin: 2px;
+	padding: 5px;
+	clear: left;
+    color: #448;
+    font-weight: bold;
+}
+
+.parameter {
+	margin: 1px;
+	padding: 1px;
+    color: black;
+    font-weight: normal;
+}
+
+.field_input {
+	left: 35%;
+	width: 55%;
+	padding:0.2em;
+	margin:0.2em; 
+}
+
+.field_input ul{
+	list-style-type: none;
+	padding-left: 0px;
+}
+
+
+.form_ctrls div {
+    padding:5px;
+}
+
+.fieldset .nobr {
+	display:none; 
+}  
+
+.fieldset .textfield {
+	margin:3px;
+	height:20px;
+	width:200px; 
+}
+
+.fieldset .textarea {
+	margin:3px;
+	height:165px;
+	width:200px; 
+}
+
+.popup_overlay{
+	position: absolute;
+	width: 100%; 
+	height: 100%;
+	text-align: center;
+}
+
+.popup_background{
+	position: absolute;
+	background-color: #000;
+	opacity:.30;
+	filter: alpha(opacity=30); 
+	-moz-opacity: 0.3;
+	left:0;
+	width: 100%; 
+	overflow:hidden;
+	height: 100%;
+	z-index: 9999;	
+}
+
+
+.popup{
+	padding: 10px;
+	border:medium solid #CCCC00;
+	position: absolute;
+	top:5%;
+	left: 25%;
+	width:50%;
+	background-color: #ffff99!important;
+	z-index: 10000;	
+}
+
+.popup input[type="button"]{
+	margin-left: 20px;
+	margin-right: 20px;
+	margin-top: 20px;
+}
+
+.uploadform {
+	display: inline;
+}
+
+.error {
+	background-position: left;
+	background-repeat: no-repeat;
+	padding-left: 20px;
+	background-image: url(../images/exclamation.gif);
+	color: darkred;
+	font-weight: bold;
+	background-color: #FFE4E1;
+}
+
+.formTitle{
+	width: 450px;
+}
+.formCtrl{
+	width: 150px;
+	margin: 20px;
+}
+
+.formCtrl input{
+	margin: 20px;
+	font-size: small;
+	padding-right: 6px; 
+	padding-left: 6px; 
+}
+
+.formTitle,.formCtrl{
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.fmt_detect span{
+	margin-right: 1em;
+	font-size: smaller;
+}
+
+.parameters{
+	margin-bottom: 3em;
+}
+
+.reference:BEFORE{
+	content: "Reference: ";
+	font-style: normal;
+}
+
+.reference{
+	font-style: italic;
+	color: black;
+	margin-bottom: 1em;
+}
+
+.authors:BEFORE{
+	content: "Author(s): ";
+	font-style: normal;
+}
+
+.authors{
+	font-weight: bold;
+	color: black;
+	margin-bottom: 1em;
+}
+
+html>body button{
+	font-weight: bold;
+}
+
+.add_link, .reset_link, .manual_link{
+	text-decoration: none;
+	color: buttontext;
+	background-color: buttonface;
+	margin-left: 1em;
+	font-weight: normal !important;
+}
+
+.manual_link{
+	text-decoration: none;
+	border-color: inherit;
+	border-width: thin;
+	outline: none; 
+	color: buttontext;
+	background-color: buttonface;
+	margin: 20px;
+	font-size: larger;
+	padding-right: 6px; 
+	padding-left: 6px; 
+}
+
+
+/* mandatory parameters management*/
+
+/* place an asterisk after a parameter label */
+label.mandatory:before{
+	content: '* ';
+	color: red;
+	/*vertical-align: super;*/
+	font-weight: bolder;
+}
+
+/* do not place an asterisk after a parameter VALUE label */
+.field_input label.mandatory:before{
+	content: ' '!important;
+}
+
+/* mandatory parameters legend */
+// 100727 turam - disable this for now. we don't manage whether parameters are mandatory, so they all appear mandatory in the current interface, which is just wrong 
+/*
+.parameters:after{
+/* 	content: '* : mandatory parameter'; */
+	color: red;
+}
+*/
+
+.commentToggle{
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	text-decoration: underline!important;
+	font-weight: bold!important;
+	color: #B44!important;
+	cursor:pointer;
+}
+
+.commentText{
+	list-style-type: none;
+	border:thin solid #CCCC00;
+	font-weight: normal!important;
+	color: black!important;
+	background-color: lightyellow;	
+}
+
+.example{
+	margin-top:0.5em;
+}
+
+.example pre{
+	border:thin solid #CCCC00;
+	background-color: #EFFFEF;	
+	margin: 0.25em;
+}
+
+.program_information {
+	color: black;
+	background-color: lightyellow;	
+	border:thin solid #CCCC00;
+}

@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="oops" scrolling="true">
+<Require feature="opensocial-0.8" />
+<Require feature="views"/>
+<Require feature="dynamic-height"/>
+<Require feature="pubsub"/>
+
+</ModulePrefs>
+<Content type="html">
+<![CDATA[
+
+<link href="/SIDGridPortal/css/form.css" type="text/css" rel="stylesheet">
+<link href="/SIDGridPortal/css/mobyle.css" type="text/css" rel="stylesheet">
+<link href="/SIDGridPortal/css/swfupload.css" type="text/css" rel="stylesheet">
+
+
+<script src="/SIDGridPortal/jsp/oopsdemo/lib/js/jquery-1.3.2.js" type="text/javascript"></script>
+
+<script type="text/javascript" src="/SIDGridPortal/js/jsonrpc.js"></script>
+<script type="text/javascript" src="/SIDGridPortal/js/util.js"></script>
+<script type="text/javascript" src="/SIDGridPortal/js/popup.js"></script>
+<script type="text/javascript" src="/SIDGridPortal/swfupload/swfupload.js"></script>
+<script type="text/javascript" src="/SIDGridPortal/js/swfupload.queue.js"></script>
+<script type="text/javascript" src="/SIDGridPortal/js/fileprogress.js"></script>
+<script type="text/javascript" src="/SIDGridPortal/js/handlers.js"></script>
+<script>
+var username;
+var token = shindig.auth.getSecurityToken();
+username = token.split(':')[0];
+
+function getElement(x) {
+        return document.getElementById(x);
+}
+function showOneSection(toshow) {
+        var sections = [ 'main', 'approval', 'waiting' ];
+        for (var i=0; i < sections.length; ++i) {
+          var s = sections[i];
+          var el = getElement(s);
+          if (s === toshow) {
+            el.style.display = "block";
+          } else {
+            el.style.display = "none";
+          }
+        }
+}
+
+function fetchData() {
+        url = "";
+        var params = {};
+        params[gadgets.io.RequestParameters.CONTENT_TYPE] =
+          gadgets.io.ContentType.TEXT;
+        params[gadgets.io.RequestParameters.AUTHORIZATION] =
+          gadgets.io.AuthorizationType.OAUTH;
+        params[gadgets.io.RequestParameters.METHOD] =
+          gadgets.io.MethodType.POST;
+        var data = {rpc: "{\"id\": 1, \"method\": \"system.listMethods\"}" };
+        params[gadgets.io.RequestParameters.POST_DATA]= gadgets.io.encodeValues(data);
+        
+        gadgets.io.makeRequest(url, function (response) {
+          var popup = null;
+          if (response.oauthApprovalUrl) {
+            popup = shindig.oauth.popup({
+              destination: response.oauthApprovalUrl,
+              windowOptions: null,
+              onOpen: function() { showOneSection('waiting'); },
+              onClose: function() { fetchData(); }
+            });
+            getElement('personalize').onclick = popup.createOpenerOnClick();
+            getElement('approvaldone').onclick = popup.createApprovedOnClick();
+            showOneSection('approval');
+          } else if (response.data) {
+            jsonrpc = new JSONRpcClient("");
+            showOneSection('main');
+          } else {
+            var whoops = document.createTextNode(
+                'OAuth error: ' + response.oauthError + ': ' +
+                response.oauthErrorText);
+            getElement('main').appendChild(whoops);
+            showOneSection('main');
+          }
+        }, params);
+        
+}
+var callback = function(result, e) {
+    //alert(result);
+    if(e) {
+        reportError(e);
+    } else {
+        // Continuation - client is ready to use
+    }
+}
+function getRadioValue(name)
+{
+    for (var i = 0; i < document.getElementsByName(name).length; i++)
+    {
+        if (document.getElementsByName(name)[i].checked)
+        {
+                return document.getElementsByName(name)[i].value;
+        }
+    }
+}
+
+function clear_plist_data()
+{
+    document.getElementById('oops_plist_data').value = ""
+}
+
+function clear_plist_files() 
+{
+    onLoad()
+}
+
+function run(){
+  var params = new Object();
+  params.javaClass = 'java.util.Hashtable';
+  params.map = {};
+  
+  var jsonrpc = new JSONRpcClient("/SIDGridPortal/Old-JSONRPC");
+
+  var plist = document.getElementById("oops_plist");
+  //if( plist.value != null && plist.value != "" )
+  //  params.map['plist'] = plist.value; 
+
+ if (plist.value == null || plist.value == ""){
+    var plist_select = document.getElementById("protein_list")
+    selected_options = jQuery.map(plist_select.options, function(n,i){ 
+                                if( n.selected )
+                                {
+                                    return n.text
+                                }
+                                else
+                                {
+                                    return null
+                                }
+                         } )
+console.log("sleectd_otpions = " + selected_options )
+    selected_options_str = selected_options.join("\n")
+
+    var fileurl = jsonrpc.FileService.writeStringToFile("oops_plist", selected_options_str);
+    params.map['plist'] = fileurl;
+
+  } else {
+    params.map['plist'] = plist.value;
+  }
+
+  var nsims = document.getElementById("oops_nsims");
+  if (nsims.value != null && nsims.value != "" ){
+    params.map['nsims'] = nsims.value;
+  } 
+
+  var st = document.getElementById("oops_st");
+  if (st.value != null && st.value != "" ){
+    params.map['st'] = st.value;
+  } var tui = document.getElementById("oops_tui");
+  if (tui.value != null && tui.value != "" ){
+    params.map['tui'] = tui.value;
+  } var coeff = document.getElementById("oops_coeff");
+  if (coeff.value != null && coeff.value != "" ){
+    params.map['coeff'] = coeff.value;
+  } 
+  
+   result = jsonrpc.WorkflowService.runWorkflow(username,"oops", params);
+   gadgets.pubsub.publish("wfhistory_input", "update");
+
+}
+
+</script>
+<script>
+
+    function sub_callback(sender, message){
+        proteinName = message.split('/').pop().split('.').shift()
+        if( proteinName.charAt(0) == 'T' && proteinName.length == 5 )
+        {
+            current_val = document.getElementById("oops_plist_data").value
+            if( current_val )
+                document.getElementById("oops_plist_data").value = proteinName + "\n" + document.getElementById("oops_plist_data").value 
+            else
+                document.getElementById("oops_plist_data").value = proteinName
+        }
+    }
+
+
+
+
+  var upload_oops_plist; 
+
+  function onLoad() {
+
+     gadgets.pubsub.subscribe("fileselect", sub_callback);
+
+
+    $.getJSON(
+        "/SIDGridPortal/jsp/proteins.jsp",
+        {paramOne : 1, paramX : 'abc'},
+        function(proteins) {
+console.log("proteins = " + proteins )
+            proteins.sort()
+console.log("proteins = " + proteins )
+ 
+            select = document.getElementById("protein_list")
+            for( p in proteins )
+            {
+                 var y=document.createElement('option');
+                 y.text = proteins[p]
+                 select.add(y,null);
+            }
+            gadgets.window.adjustHeight()
+        }
+    );
+
+
+
+     upload_oops_plist = new SWFUpload({
+     				// Backend Settings
+     				upload_url: "/SIDGridPortal/fileupload",	// Relative to the SWF file (or you can use absolute paths)
+     				post_params: { "ChannelID": "28", "Type": "Type2" },
+
+     				// File Upload Settings
+     				file_size_limit : "2000000",	//?? How can we set this, need a size attribute in the mobyle schema
+     				file_types : "*.*",
+     				file_types_description : "All Files",
+     				file_upload_limit : "10",
+     				file_queue_limit : "0",
+
+     				// Event Handler Settings (all my handlers are in the Handler.js file)
+     				file_dialog_start_handler : fileDialogStart,
+     				file_queued_handler : fileQueued,
+     				file_queue_error_handler : fileQueueError,
+     				file_dialog_complete_handler : fileDialogComplete,
+     				upload_start_handler : uploadStart,
+     				upload_progress_handler : uploadProgress,
+     				upload_error_handler : uploadError,
+     				upload_success_handler : uploadSuccess,
+     				upload_complete_handler : MyUploadComplete,
+
+     				// Button Settings
+     				button_image_url : "/SIDGridPortal/images/XPButtonUploadText_61x22.png",
+     				button_placeholder_id : "spanButtonPlaceholder_oops_plist",
+     				button_width: 80,
+     				button_height: 22,
+     				
+     				// Flash Settings
+     				flash_url : "/SIDGridPortal/swfupload/swfupload.swf",
+     				
+
+     				custom_settings : {
+     					progressTarget : "fsUploadProgress_oops_plist",
+     					cancelButtonId : "btnCancel_oops_plist",
+     					currentFileId  : "currentFileId",
+     					fileInputTarget: "oops_plist",
+     				},
+     				
+     				// Debug Settings
+     				debug: false
+     			}); 
+    gadgets.window.adjustHeight();
+  }
+  
+  window.onload = onLoad
+</script>
+
+<style>
+.label {
+  width:150px;
+  float:left;
+  margin: 3px;
+  padding: 2px;
+}
+
+.form_parameter {
+  float:left;
+
+
+}
+
+.parameterX {
+
+  border: 1px solid gray;
+  background-color: #eee;
+  margin: 3px;
+  padding: 5px;
+  height: 25px;
+}
+
+</style>
+
+<div class="formHead">
+<span class="formTitle">
+</span>
+<input type="button" style="display:none" value="ask for help" id="helpdisplay_oops"><input type="hidden" name="programName" value="oops"></span>
+</div>
+
+<div class="parameters" style="float:left">
+    
+    
+    <div class="parameterX" style="height:200">
+        <div class=label>Input Proteins
+            <span class="field_inputX">
+                <input type="hidden" id="oops_plist" name="oops_plist">
+    
+                <div id="flashUI_oops_plist">
+                    <div class="uploadfieldset flash" id="fsUploadProgress_oops_plist">
+                    </div>
+                    <div style="padding-left: 5px;">
+                        <span id="spanButtonPlaceholder_oops_plist"></span><br>
+                        <input type="button" value="Cancel Uploads" disabled style="margin-left: 2px; height: 22px; font-size: 8pt;" id="btnCancel_oops_plist" onclick="cancelQueue(upload_oops_plist);">
+                    </div>
+                </div>
+            </span>
+            &nbsp;
+        </div>
+        <div style="float:left;margin-bottom:3px">
+            <select id="protein_list" multiple size=15 style="width:150px;height:200px"></select>
+        </div>
+    
+    </div>
+
+
+
+
+   <div style="clear:both"> </div>
+    <div class="parameterX">
+            <div class=label>Simulation Times</div>
+            <input type="text" id="oops_nsims" name="oops_nsims" class="form_parameter mandatory" value="1">
+            &nbsp;
+    </div>
+   <div style="clear:both"> </div>
+    
+    <div class="parameterX">
+        <div class=label >Starting Temperature</div>
+        <input type="text" id="oops_st" name="oops_st" class="form_parameter mandatory" value="100">
+            &nbsp;
+    </div>
+    
+   <div style="clear:both">  </div>
+    
+    <div class="parameterX">
+        <div class=label>Time Update Interval</div>
+        <input type="text" id="oops_tui" name="oops_tui" class="form_parameter mandatory" value="1">
+            &nbsp;
+    </div>
+    
+   <div style="clear:both"></div>
+    
+    <div class="parameterX">
+            <div class=label>Coefficent</div>
+            <input type="text" id="oops_coeff" name="oops_coeff" class="form_parameter mandatory" value="1.1">
+            &nbsp;
+    </div>
+
+</div>
+<div style=float:left>
+<br>
+        <input type="submit" value="Run" onclick="run();" id="submit_oops" style="font-size:14px">
+</div>
+
+]]>
+</Content>
+</Module>
