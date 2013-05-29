@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Context reloadable="true">
+	<Resource
+	 name="jdbc/workflow" 
+	 type="javax.sql.DataSource"
+	 maxActive="100" 
+	 maxIdle="30"   
+	 username="root"
+	 maxWait="10000"	
+	 driverClassName="com.mysql.jdbc.Driver"
+	 password="buaanlsde" 
+	 url="jdbc:mysql://localhost:3306/buaa_bio_software" />
+</Context>

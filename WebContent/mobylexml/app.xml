@@ -1,0 +1,74 @@
+<sid:program xmlns:sid="http://ci.uchicago.edu/sidgrid/sidgrid-mobyle">
+    <sid:head>
+        <sid:name>app</sid:name>
+        <sid:version/>
+        <sid:doc/>
+        <sid:command>app</sid:command>
+    </sid:head>
+    <sid:parameters>
+        <sid:parameter ismandatory="1" issimple="1">
+            <sid:name>a</sid:name>
+            <sid:prompt>a</sid:prompt>
+            <sid:type>
+                <sid:datatype>
+                    <sid:class>Integer</sid:class>
+                </sid:datatype>
+            </sid:type>
+            <sid:vdef>
+                <sid:value>1</sid:value>
+            </sid:vdef>
+            <sid:format>
+                <sid:code proglang="python">("", "-a "+str(value))[value is not None]</sid:code>
+            </sid:format>
+            <sid:argpos>1</sid:argpos>
+        </sid:parameter>
+        <sid:parameter ismandatory="1" issimple="1">
+            <sid:name>b</sid:name>
+            <sid:prompt>b</sid:prompt>
+            <sid:type>
+                <sid:datatype>
+                    <sid:class>Integer</sid:class>
+                </sid:datatype>
+            </sid:type>
+            <sid:vdef>
+                <sid:value>2</sid:value>
+            </sid:vdef>
+            <sid:format>
+                <sid:code proglang="python">("", "-b "+str(value))[value is not None]</sid:code>
+            </sid:format>
+            <sid:argpos>2</sid:argpos>
+        </sid:parameter>
+        <sid:parameter ismandatory="1" issimple="1">
+            <sid:name>longarg</sid:name>
+            <sid:prompt>longarg</sid:prompt>
+            <sid:type>
+                <sid:datatype>
+                    <sid:class>String</sid:class>
+                </sid:datatype>
+            </sid:type>
+            <sid:vdef>
+                <sid:value>'longarg'</sid:value>
+            </sid:vdef>
+            <sid:format>
+                <sid:code proglang="python">("", "--longarg="+str(value))[value is not None]</sid:code>
+            </sid:format>
+            <sid:argpos>3</sid:argpos>
+        </sid:parameter>
+        <sid:parameter ismandatory="1" issimple="1">
+            <sid:name>longarg2</sid:name>
+            <sid:prompt>longarg2</sid:prompt>
+            <sid:type>
+                <sid:datatype>
+                    <sid:class>Boolean</sid:class>
+                </sid:datatype>
+            </sid:type>
+            <sid:vdef>
+                <sid:value/>
+            </sid:vdef>
+            <sid:format>
+                <sid:code proglang="python">("", "--longarg2")[value]</sid:code>
+            </sid:format>
+            <sid:argpos>4</sid:argpos>
+        </sid:parameter>
+    </sid:parameters>
+</sid:program>
