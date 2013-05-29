@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Hadoop Job Moniter</title>
+<link href="css/monitor.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div>
+		<span>Select a workflow</span>
+		<form>
+			<select id="workflows"></select>
+		</form>
+		<hr>
+
+		<span>Workflow Information</span>
+		<table id="workflow" border="1" col="4">
+			<tr id="workflowHead">
+				<th style="width: 30px;">ID</th>
+				<th style="width: 100px;">Name</th>
+				<th style="width: 100px;">User Name</th>
+				<th style="width: 100px;">Status</th>
+				<th style="width: 180px;">Start Time</th>
+				<th style="width: 130px;">Running Time</th>
+				<th style="width: 180px;">Finish Time</th>
+			</tr>
+		</table>
+		<hr>
+
+		<span>Blocks Information</span>
+		<table id="blocks" border="1" col="8">
+			<tr id="blockHead">
+				<th style="width: 30px;">ID</th>
+				<th style="width: 100px;">Name</th>
+				<th style="width: 100px;">Status</th>
+				<th style="width: 130px;">Wait Time</th>
+				<th style="width: 180px;">Start Time</th>
+				<th style="width: 100px;">Progress</th>
+				<th style="width: 130px;">Running Time</th>
+				<th style="width: 180px;">Finish Time</th>
+			</tr>
+		</table>
+
+	</div>
+
+	<script type="text/javascript" src="js/EventUtil.js"></script>
+	<script type="text/javascript" src="js/monitor.js"></script>
+
+</body>
+</html>
