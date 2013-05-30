@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 1.1//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+<hibernate-mapping>
+   <class name="org.uc.sidgrid.app.AppScript" table="script">
+     <id name="scriptId" column="scriptId" type="long">
+        <generator class="native"/>
+     </id>
+     <property name="version"/>
+     <property name="scriptName"/>
+     <property name="xmlDesc" column="xmldesfile" />
+     <property name="mainscript" column="mainscript" />
+     <property name="gadgetLink" column="gadgetLink" />
+     
+     <many-to-one name="byUser" class="org.uc.sidgrid.app.User" 
+                 column="byUser"
+                 />
+                 
+     <many-to-one name="application" class="org.uc.sidgrid.app.Application" 
+                 column="application"
+                 not-null="true"/>
+   </class>
+</hibernate-mapping>
