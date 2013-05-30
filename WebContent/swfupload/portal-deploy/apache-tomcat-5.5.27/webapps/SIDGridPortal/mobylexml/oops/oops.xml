@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE program PUBLIC "program" "mobyle.dtd">
+<program xmlns="http://ci.uchicago.edu/sidgrid/sidgrid-mobyle">
+  <head>
+    <name>oops</name>
+    <version>1.0</version>
+    <doc>
+      <title>OOPS: Open Protein Simulator</title>
+      <description>
+        <text lang="en">simulation for protein folding and structure prediction</text>
+      </description>
+      <reference> OOPS: Open Protein Simulator http://protlib.uchicago.edu/oops.html</reference>
+    </doc>
+    <category>bio:protein-structure</category>
+    <command>oops</command>
+    </head>
+    
+    <parameters>
+    
+    <parameter ismandatory="1" issimple="1" ismaininput="1">
+      <name>plist</name>
+      <prompt lang="en">input protein fasta file</prompt>
+      <type>
+	    <datatype>
+	    <class>File</class>
+	    </datatype>
+	  </type>
+	  <format>
+	     <code proglang="python"> ("","-plist="+str(value))[value is not None] </code>
+      </format>
+      <argpos>1</argpos>
+    </parameter>
+    
+    <parameter ismandatory="1" issimple="1" >
+      <name>nsims</name>
+      <prompt lang="en">simulation times</prompt>
+      <type>
+	    <datatype>
+	    <class>Integer</class>
+	    </datatype>
+	  </type>
+	  <format>
+	     <code proglang="python"> ("","-nsims="+str(value))[value is not None]</code>
+      </format>
+      <argpos>2</argpos>
+    </parameter>
+    
+    <parameter ismandatory="1" issimple="1" >
+      <name>st</name>
+      <prompt lang="en">starting temperature</prompt>
+      <type>
+	    <datatype>
+	    <class>Integer</class>
+	    </datatype>
+	  </type>
+	  <format>
+	     <code proglang="python"> ("","-st="+str(value))[value is not None]</code>
+      </format>
+      <argpos>3</argpos>
+    </parameter>
+    
+    <parameter ismandatory="1" issimple="1" >
+      <name>tui</name>
+      <prompt lang="en">time update interval</prompt>
+      <type>
+	    <datatype>
+	    <class>Integer</class>
+	    </datatype>
+	  </type>
+	  <format>
+	     <code proglang="python"> ("","-tui="+str(value))[value is not None]</code>
+      </format>
+      <argpos>4</argpos>
+    </parameter>
+    
+    <parameter ismandatory="1" issimple="1" >
+      <name>coeff</name>
+      <prompt lang="en">coefficent</prompt>
+      <type>
+	    <datatype>
+	    <class>Float</class>
+	    </datatype>
+	  </type>
+	  <format>
+	     <code proglang="python"> ("","-coeff="+str(value))[value is not None]</code>
+      </format>
+      <argpos>5</argpos>
+    </parameter>
+    
+    </parameters>
+</program>

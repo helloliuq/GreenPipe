@@ -1,0 +1,30 @@
+
+  .delete-button {
+    cursor: pointer;
+    background: transparent url(../images/delete.gif) no-repeat center center;
+    width: 16px;  height: 16px;
+  }
+
+  .insert-button {
+    cursor: pointer;
+    background: transparent url(../images/insert.png) no-repeat center center;
+    width: 16px;  height: 16px;
+  }
+  ul#icons li {
+    cursor:pointer;
+    float:left;
+    list-style:none outside none;
+    margin:2px;
+    padding:4px 0;
+    position:relative;
+  }
+
+  .uploadTable { margin:5px; }
+
+  .sw-main {
+     width:800px;
+     margin-left:auto;
+     margin-right:auto;
+   }
+
+

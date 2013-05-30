@@ -1,0 +1,145 @@
+h1,h2,h3,h4,h5 {
+	color: #448;
+       font-size: 80%;
+}
+
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 90%;
+       background: :#efefef;
+}
+
+#mainContainer{
+	vertical-align: top;
+}
+
+#navbar {
+	vertical-align: top;
+	width: 20%;
+}
+
+#drawer{
+	margin-top: 20px;
+	border: 1px solid #666666;
+}
+
+#portalMain {
+	vertical-align: top;
+	padding-left: 5px;
+	width: 75%;
+}
+
+.loading{
+	background-image: url("/MobylePortal/images/loading.gif");
+	background-position: center;
+	background-repeat: no-repeat;
+	min-height: 100px;
+}
+
+.sessionList ul{
+	padding-left: 0px;
+}
+
+.sessionList li {
+	color: darkblue;
+	border: none;	
+	list-style-type: none;
+	line-height: 1.5;
+	cursor: pointer;
+}
+
+.sessionList a {
+	text-decoration: none;
+}
+
+#sessionInfodd, #filesdd, #jobsdd{
+	font-size: 80%;
+	font-weight:bold;
+}
+
+.jobStatusbuilding, .jobStatussubmitted, .jobStatuspending, .jobStatusrunning, .jobStatuserror, .jobStatuskilled, .jobStatushold, .jobStatusfinished{
+    background-position: left;
+	background-repeat: no-repeat;
+	padding-left: 20px;
+}
+
+.jobStatusbuilding {
+	background-image: url(../images/hourglass.gif);
+	color: darkorange;
+}
+
+.jobStatussubmitted, .jobStatuspending, .jobStatusrunning {
+	background-image: url(../images/hourglass.gif);
+	color: darkorange;
+}
+
+.jobStatuserror, .jobStatuskilled, .jobStatushold {
+	background-image: url(../images/cross.gif);
+	color: red;
+}
+
+.jobStatusfinished {
+	background-image: url(../images/tick.gif);
+	color: green;
+}
+
+a {
+	color: darkblue;
+	border: none;
+}
+
+textarea{
+    width: 100%;
+}
+
+.tooltip{
+	border: 1px solid #777;
+	position: absolute;
+	background-color: lightyellow;
+	z-index: 20000;
+	/* setting tooltip opacity to opaque */
+	opacity:1;
+	color: black;
+	font-weight: normal;
+	list-style-type: none;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+/* indicating that disabled inputs are not editable*/
+input[readonly] {
+  background:inactivecaption;
+  cursor:default;
+  border: none;
+}
+
+/* general announcements */
+.announcement{
+  border: 1px solid #777;
+  background-color: lightyellow;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size:large;
+  font-weight:bold;
+}
+
+noscript{
+  border: 1px solid #777;
+  background-color: lightyellow;
+  position: absolute;
+  text-align: center;
+  vertical-align: middle;
+  font-size:large;
+  font-weight:bold;
+  top: 0;
+  left: 0;
+  width:100%;
+  height:100%;
+}
+
+#preload_img{
+  display: none;
+}

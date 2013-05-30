@@ -1,0 +1,122 @@
+<sid:program xmlns:sid="http://ci.uchicago.edu/sidgrid/sidgrid-mobyle">
+    <sid:head>
+        <sid:name>b</sid:name>
+        <sid:version/>
+        <sid:doc/>
+        <sid:command/>
+    </sid:head>
+    <sid:parameters>
+        <sid:parameter ismandatory="1" issimple="1">
+            <sid:name>plist</sid:name>
+            <sid:prompt>plist</sid:prompt>
+            <sid:type>
+                <sid:datatype>
+                    <sid:class>String</sid:class>
+                </sid:datatype>
+            </sid:type>
+            <sid:vdef>
+                <sid:value>value</sid:value>
+            </sid:vdef>
+            <sid:format>
+                <sid:code proglang="python">("", "-plist="+str(value))[value is not None]</sid:code>
+            </sid:format>
+            <sid:argpos>1</sid:argpos>
+        </sid:parameter>
+        <sid:parameter ismandatory="1" issimple="1">
+            <sid:name>indir</sid:name>
+            <sid:prompt>indir</sid:prompt>
+            <sid:type>
+                <sid:datatype>
+                    <sid:class>String</sid:class>
+                </sid:datatype>
+            </sid:type>
+            <sid:vdef>
+                <sid:value>value</sid:value>
+            </sid:vdef>
+            <sid:format>
+                <sid:code proglang="python">("", "-indir="+str(value))[value is not None]</sid:code>
+            </sid:format>
+            <sid:argpos>2</sid:argpos>
+        </sid:parameter>
+        <sid:parameter ismandatory="1" issimple="1">
+            <sid:name>outdir</sid:name>
+            <sid:prompt>outdir</sid:prompt>
+            <sid:type>
+                <sid:datatype>
+                    <sid:class>String</sid:class>
+                </sid:datatype>
+            </sid:type>
+            <sid:vdef>
+                <sid:value>output</sid:value>
+            </sid:vdef>
+            <sid:format>
+                <sid:code proglang="python">("", "-outdir="+str(value))[value is not None]</sid:code>
+            </sid:format>
+            <sid:argpos>3</sid:argpos>
+        </sid:parameter>
+        <sid:parameter ismandatory="1" issimple="1">
+            <sid:name>nsims</sid:name>
+            <sid:prompt>nsims</sid:prompt>
+            <sid:type>
+                <sid:datatype>
+                    <sid:class>String</sid:class>
+                </sid:datatype>
+            </sid:type>
+            <sid:vdef>
+                <sid:value>1</sid:value>
+            </sid:vdef>
+            <sid:format>
+                <sid:code proglang="python">("", "-nsims="+str(value))[value is not None]</sid:code>
+            </sid:format>
+            <sid:argpos>4</sid:argpos>
+        </sid:parameter>
+        <sid:parameter ismandatory="1" issimple="1">
+            <sid:name>st</sid:name>
+            <sid:prompt>st</sid:prompt>
+            <sid:type>
+                <sid:datatype>
+                    <sid:class>String</sid:class>
+                </sid:datatype>
+            </sid:type>
+            <sid:vdef>
+                <sid:value>100</sid:value>
+            </sid:vdef>
+            <sid:format>
+                <sid:code proglang="python">("", "-st="+str(value))[value is not None]</sid:code>
+            </sid:format>
+            <sid:argpos>5</sid:argpos>
+        </sid:parameter>
+        <sid:parameter ismandatory="1" issimple="1">
+            <sid:name>tui</sid:name>
+            <sid:prompt>tui</sid:prompt>
+            <sid:type>
+                <sid:datatype>
+                    <sid:class>String</sid:class>
+                </sid:datatype>
+            </sid:type>
+            <sid:vdef>
+                <sid:value>100</sid:value>
+            </sid:vdef>
+            <sid:format>
+                <sid:code proglang="python">("", "-tui="+str(value))[value is not None]</sid:code>
+            </sid:format>
+            <sid:argpos>6</sid:argpos>
+        </sid:parameter>
+        <sid:parameter ismandatory="1" issimple="1">
+            <sid:name>coeff</sid:name>
+            <sid:prompt>coeff</sid:prompt>
+            <sid:type>
+                <sid:datatype>
+                    <sid:class>String</sid:class>
+                </sid:datatype>
+            </sid:type>
+            <sid:vdef>
+                <sid:value>0.1</sid:value>
+            </sid:vdef>
+            <sid:format>
+                <sid:code proglang="python">("", "-coeff="+str(value))[value is not None]</sid:code>
+            </sid:format>
+            <sid:argpos>7</sid:argpos>
+        </sid:parameter>
+    </sid:parameters>
+</sid:program>

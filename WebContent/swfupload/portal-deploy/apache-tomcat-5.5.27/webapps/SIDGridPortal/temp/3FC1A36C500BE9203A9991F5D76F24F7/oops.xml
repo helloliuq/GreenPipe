@@ -1,0 +1,364 @@
+<program xmlns="http://ci.uchicago.edu/swift/2009/02/swiftscript"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  
+  <types>
+     	<type>
+     		<typename>file</typename>
+     		<typealias>string</typealias>
+     		<typestructure></typestructure>
+     	</type>
+     	<type>
+     		<typename>PDB</typename>
+     		<typealias>string</typealias>
+     		<typestructure></typestructure>
+     	</type>
+     	<type>
+     		<typename>RamaMap</typename>
+     		<typealias>string</typealias>
+     		<typestructure></typestructure>
+     	</type>
+     	<type>
+     		<typename>RamaIndex</typename>
+     		<typealias>string</typealias>
+     		<typestructure></typestructure>
+     	</type>
+     	<type>
+     		<typename>OOPSLog</typename>
+     		<typealias>string</typealias>
+     		<typestructure></typestructure>
+     	</type>
+     	<type>
+     		<typename>SecSeq</typename>
+     		<typealias>string</typealias>
+     		<typestructure></typestructure>
+     	</type>
+     	<type>
+     		<typename>Fasta</typename>
+     		<typealias>string</typealias>
+     		<typestructure></typestructure>
+     	</type>
+     	<type>
+     		<typename>RAMAIn</typename>
+     		<typealias></typealias>
+     		<typestructure>
+     			    <member>
+     					<membername>map</membername>
+     					<membertype>RamaMap</membertype>
+     				</member>
+     			    <member>
+     					<membername>index</membername>
+     					<membertype>RamaIndex</membertype>
+     				</member>
+     			    <member>
+     					<membername>secseq</membername>
+     					<membertype>SecSeq</membertype>
+     				</member>
+     			    <member>
+     					<membername>fasta</membername>
+     					<membertype>Fasta</membertype>
+     				</member>
+     			    <member>
+     					<membername>native</membername>
+     					<membertype>PDB</membertype>
+     				</member>
+     		</typestructure>
+     	</type>
+     	<type>
+     		<typename>RAMAOut</typename>
+     		<typealias></typealias>
+     		<typestructure>
+     			    <member>
+     					<membername>pdb</membername>
+     					<membertype>PDB</membertype>
+     				</member>
+     			    <member>
+     					<membername>log</membername>
+     					<membertype>OOPSLog</membertype>
+     				</member>
+     		</typestructure>
+     	</type>   
+  </types>  
+  <procedure name="runradialFILE" src="line 26">
+
+      <output 
+    name="e" type="external"
+
+     xsi:nil="true" />
+
+      <output 
+    name="ramaout" type="RAMAOut"
+
+     xsi:nil="true" />
+
+      <input 
+    name="prot" type="string"
+
+     xsi:nil="true" />
+
+      <input 
+    name="ramain" type="RAMAIn"
+
+     xsi:nil="true" />
+    <binding>
+      <application src="line 26">
+        <executable>runradial</executable>
+        <variableReference>prot</variableReference><function name="filename">
+          <structureMember>
+            <variableReference>ramain</variableReference>
+            <memberName>fasta</memberName>
+          </structureMember></function><function name="filename">
+          <structureMember>
+            <variableReference>ramaout</variableReference>
+            <memberName>pdb</memberName>
+          </structureMember></function>  </application>
+    </binding>
+  </procedure>
+  <procedure name="runradial" src="line 30">
+
+      <input 
+    name="prot" type="string"
+
+     xsi:nil="true" />
+
+      <input 
+    name="fasta" type="string"
+
+     xsi:nil="true" />
+
+      <input 
+    name="pdb" type="string"
+
+     xsi:nil="true" />
+    <binding>
+      <application src="line 30">
+        <executable>runradial</executable>
+        <variableReference>prot</variableReference><variableReference>fasta</variableReference><variableReference>pdb</variableReference>  </application>
+    </binding>
+  </procedure>
+  <procedure name="runoops" src="line 34">
+
+      <input 
+    name="prot" type="string"
+
+     xsi:nil="true" />
+
+      <input 
+    name="fasta" type="string"
+
+     xsi:nil="true" />
+
+      <input 
+    name="pdb" type="string"
+
+     xsi:nil="true" />
+    <binding>
+      <application src="line 34">
+        <executable>runoops</executable>
+        <variableReference>prot</variableReference><variableReference>fasta</variableReference><variableReference>pdb</variableReference>  </application>
+    </binding>
+  </procedure>
+  <procedure name="runoops_extra_args" src="line 38">
+
+      <input 
+    name="prot" type="string"
+
+     xsi:nil="true" />
+
+      <input 
+    name="fasta" type="string"
+
+     xsi:nil="true" />
+
+      <input 
+    name="pdb" type="string"
+
+     xsi:nil="true" />
+
+      <input 
+    name="st" type="string"
+
+     xsi:nil="true" />
+
+      <input 
+    name="tui" type="string"
+
+     xsi:nil="true" />
+
+      <input 
+    name="coeff" type="string"
+
+     xsi:nil="true" />
+    <binding>
+      <application src="line 38">
+        <executable>runoops</executable>
+        <variableReference>prot</variableReference><variableReference>fasta</variableReference><variableReference>pdb</variableReference><variableReference>st</variableReference><variableReference>tui</variableReference><variableReference>coeff</variableReference>  </application>
+    </binding>
+  </procedure>
+  <procedure name="finished" src="line 42">
+
+      <output 
+    name="e1" type="external"
+
+     xsi:nil="true" />
+
+      <input 
+    name="e0" type="external"
+
+     xsi:nil="true" />
+    <call proc="trace" src="line 44">
+      <input><stringConstant>all done</stringConstant></input>
+    </call>
+  </procedure>
+  <procedure name="initex" src="line 47">
+
+      <output 
+    name="e0" type="external"
+
+     xsi:nil="true" />
+    <call proc="trace" src="line 49">
+      <input><stringConstant>initex called</stringConstant></input>
+    </call>
+  </procedure>
+  <procedure name="broadcast" src="line 52">
+
+      <output 
+    name="eo" type="external"
+
+     xsi:nil="true" />
+
+      <input 
+    name="ei" type="external"
+
+     xsi:nil="true" />
+
+      <input 
+    name="fname" type="string"
+
+     xsi:nil="true" />
+    <binding>
+      <application src="line 52">
+        <executable>bc2all</executable>
+        <variableReference>fname</variableReference>  </application>
+    </binding>
+  </procedure>
+  <procedure name="main" src="line 58">
+    <variable name="plistfile" type="string" isGlobal="false" xsi:nil="true"/>
+    <assign src="line 60">
+     <variableReference>plistfile</variableReference>
+     <function name="arg">
+       <stringConstant>plist</stringConstant><stringConstant></stringConstant></function>
+    </assign>
+    <variable name="indir" type="string" isGlobal="false" xsi:nil="true"/>
+    <assign src="line 61">
+     <variableReference>indir</variableReference>
+     <function name="arg">
+       <stringConstant>indir</stringConstant><stringConstant></stringConstant></function>
+    </assign>
+    <variable name="outdir" type="string" isGlobal="false" xsi:nil="true"/>
+    <assign src="line 62">
+     <variableReference>outdir</variableReference>
+     <function name="arg">
+       <stringConstant>outdir</stringConstant><stringConstant>output</stringConstant></function>
+    </assign>
+    <variable name="nsims" type="string" isGlobal="false" xsi:nil="true"/>
+    <assign src="line 64">
+     <variableReference>nsims</variableReference>
+     <function name="arg">
+       <stringConstant>nsims</stringConstant><stringConstant>1</stringConstant></function>
+    </assign>
+    <variable name="st" type="string" isGlobal="false" xsi:nil="true"/>
+    <assign src="line 65">
+     <variableReference>st</variableReference>
+     <function name="arg">
+       <stringConstant>st</stringConstant><stringConstant>100</stringConstant></function>
+    </assign>
+    <variable name="tui" type="string" isGlobal="false" xsi:nil="true"/>
+    <assign src="line 66">
+     <variableReference>tui</variableReference>
+     <function name="arg">
+       <stringConstant>tui</stringConstant><stringConstant>100</stringConstant></function>
+    </assign>
+    <variable name="coeff" type="string" isGlobal="false" xsi:nil="true"/>
+    <assign src="line 68">
+     <variableReference>coeff</variableReference>
+     <function name="arg">
+       <stringConstant>coeff</stringConstant><stringConstant>0.1</stringConstant></function>
+    </assign>
+    <variable name="create" type="int" isGlobal="false" xsi:nil="true"/>
+    <assign src="line 70">
+     <variableReference>create</variableReference>
+     <integerConstant>1</integerConstant>
+    </assign>
+    <variable name="plist" type="string[]" isGlobal="false" xsi:nil="true"/>
+    <call proc="readData" src="line 70">
+      <output><variableReference>plist</variableReference></output>
+      <input><variableReference>plistfile</variableReference></input>
+    </call>
+    <variable name="simulations" type="int[]" isGlobal="false" xsi:nil="true"/>
+    <assign src="line 74">
+     <variableReference>simulations</variableReference>
+
+       <range>
+         <integerConstant>0</integerConstant>
+         <arith op="-">
+           <function name="toint">
+             <variableReference>nsims</variableReference></function>
+           <integerConstant>1</integerConstant>
+         </arith>
+       </range>
+
+    </assign>
+    <variable name="ramain" type="RAMAIn[]" isGlobal="false">
+      <mapping descriptor="ext">
+        <param name="exec"><stringConstant>RAMAInProts.map.sh</stringConstant></param>
+        <param name="i"><variableReference>indir</variableReference></param>
+        <param name="p"><variableReference>plistfile</variableReference></param>
+      </mapping>
+    </variable>
+    <variable name="ramaout" type="RAMAOut[][]" isGlobal="false">
+      <mapping descriptor="ext">
+        <param name="exec"><stringConstant>RandProtRadialMapper.py</stringConstant></param>
+        <param name="o"><variableReference>outdir</variableReference></param>
+        <param name="p"><variableReference>plistfile</variableReference></param>
+        <param name="n"><variableReference>nsims</variableReference></param>
+        <param name="c"><variableReference>create</variableReference></param>
+      </mapping>
+    </variable>
+    <foreach var="sim"  src="line 77">
+    <in><variableReference>simulations</variableReference></in>
+    <body><foreach var="prot"  indexVar="index" src="line 78">
+      <in><variableReference>plist</variableReference></in>
+      <body><call proc="runoops_extra_args" src="line 79">
+          <input><variableReference>prot</variableReference></input>
+          <input><function name="strcat">
+            <stringConstant>/</stringConstant><function name="filename">
+              <structureMember>
+                <arraySubscript>
+                 <variableReference>ramain</variableReference>
+                 <variableReference>index</variableReference>
+                </arraySubscript>
+                <memberName>fasta</memberName>
+              </structureMember></function></function></input>
+          <input><function name="strcat">
+            <stringConstant>/</stringConstant><function name="filename">
+              <structureMember>
+                <arraySubscript>
+                 <arraySubscript>
+                  <variableReference>ramaout</variableReference>
+                  <variableReference>index</variableReference>
+                 </arraySubscript>
+                 <variableReference>sim</variableReference>
+                </arraySubscript>
+                <memberName>pdb</memberName>
+              </structureMember></function></function></input>
+          <input><variableReference>st</variableReference></input>
+          <input><variableReference>tui</variableReference></input>
+          <input><variableReference>coeff</variableReference></input>
+        </call></body>
+      </foreach></body>
+    </foreach>
+  </procedure>
+  <call proc="main" src="line 84">
+  </call>
+</program>

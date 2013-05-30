@@ -1,0 +1,1 @@
+$arg.type$ $arg.name$ <single_file_mapper;file="$arg.value$">;

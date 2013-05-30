@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+<ModulePrefs title=" Elan Flash player" height="650" width="960" scrolling="true"
+description="Uses the elan.swf"
+author="Kavithaa"
+author_email="xxx"
+author_aboutme="test">
+<Require feature="flash" />
+<Require feature="opensocial-0.8"  />
+<Require feature="views"/>
+<Require feature="dynamic-height"/>
+
+<OAuth>
+      <Service>
+        <Request url="http://sidgrid.ci.uchicago.edu:8080/jsonapp/request_token" />
+        <Access url="http://sidgrid.ci.uchicago.edu:8080/jsonapp/access_token" />
+        <Authorization url="http://sidgrid.ci.uchicago.edu:8080/jsonapp/authorize?oauth_callback=http://oauth.gmodules.com/gadgets/oauthcallback" />
+      </Service>
+    </OAuth>
+    <Preload authz="oauth" href="http://sidgrid.ci.uchicago.edu:8080/jsonapp/JSON-RPC" />
+
+</ModulePrefs>
+<Content type="html">
+<![CDATA[
+<div id="flashcontainer" style="text-align: center; vertical-align:center"></div>
+ 
+<script type="text/javascript" src="http://sidgrid.ci.uchicago.edu:8080/webdav/js/jsonrpc-oauth-no-wwj.js"></script>
+<script type="text/javascript" src="http://sidgrid.ci.uchicago.edu:8080/webdav/js/util.js"></script>
+<script type="text/javascript" src="http://sidgrid.ci.uchicago.edu:8080/webdav/js/popup.js"></script>
+
+<script type="text/javascript">
+var outcome="path";
+
+function $(x) {
+        return document.getElementById(x);
+}
+
+function showOneSection(toshow) {
+        var sections = [ 'main', 'approval', 'waiting' ];
+        for (var i=0; i < sections.length; ++i) {
+          var s = sections[i];
+          var el = $(s);
+          if (s === toshow) {
+            el.style.display = "block";
+          } else {
+            el.style.display = "none";
+          }
+        }
+}
+
+function makeDOMRequest() {    
+        var params = {};  
+        params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT; 
+        var urldom = "http://sidgrid.ci.uchicago.edu:8080/webdav/extract.xml";  
+        gadgets.io.makeRequest(urldom, response, params);
+      };
+      function response(obj) { 
+         domdata=obj.text;
+         showSWF();
+}
+
+var callback = function(result, e) {
+    //alert(result);
+    eval("obj = " + result.data);
+    outcome = obj.result;
+   alert(outcome);
+    if(e) {
+        reportError(e);
+    } else {
+        // Continuation - client is ready to use
+    }
+}
+
+function fetchData(){
+url = "http://sidgrid.ci.uchicago.edu:8080/jsonapp/JSON-RPC";
+        var params = {};
+        params[gadgets.io.RequestParameters.CONTENT_TYPE] =
+          gadgets.io.ContentType.TEXT;
+        params[gadgets.io.RequestParameters.AUTHORIZATION] =
+          gadgets.io.AuthorizationType.OAUTH;
+       
+        params[gadgets.io.RequestParameters.METHOD] =
+          gadgets.io.MethodType.POST;
+        var data = {rpc: "{\"id\": 1, \"method\": \"system.listMethods\" , \"params\" :  [] }" };
+        params[gadgets.io.RequestParameters.POST_DATA]= gadgets.io.encodeValues(data);
+gadgets.io.makeRequest(url, function (response) {
+          var popup = null;
+          if (response.oauthApprovalUrl) {
+            popup = shindig.oauth.popup({
+              destination: response.oauthApprovalUrl,
+              windowOptions: null,
+              onOpen: function() { showOneSection('waiting');},
+              onClose: function() { fetchData(); }
+            });
+$('personalize').onclick = popup.createOpenerOnClick();
+            $('approvaldone').onclick = popup.createApprovedOnClick();
+showOneSection('approval');
+
+ } else if (response.data) {
+            jsonrpc = new JSONRpcClient("http://sidgrid.ci.uchicago.edu:8080/jsonapp/JSON-RPC");
+showOneSection('main');
+
+}
+
+ }, params);}
+
+
+
+function runFlash(){
+try{
+var pname = document.getElementById("projectname").value;
+alert("projectname:"+pname);
+result=jsonrpc.mediaobj.getMediaPath(callback,pname);
+alert("Display result?");
+
+}catch(err){
+alert("error:"+err);
+}
+showSWF();
+}
+
+// Display SWF
+function showSWF() {
+// The URL for the .swf
+var url = "https://sidgrid.ci.uchicago.edu:/sidgrid/elan.swf";
+//var mediapath="https://sidgrid.ci.uchicago.edu/sidgrid/experiment_files/363/transcoded/31010.flv";
+var mediapath=outcome;
+var res =new Array();
+res=outcome.split("/");
+var mediaid=res[5];
+alert(mediaid);
+//var mediaid="363";
+//var annot="http://sidgrid.ci.uchicago.edu:8080/webdav/extract.xml";
+var annot="https://sidgrid.ci.uchicago.edu/sidgrid/extract.py";
+var flashvars = "mediaurl="+mediapath+"&id="+mediaid+"&extract="+annot;
+
+url = url + "?" + flashvars ;
+
+//url = gadget.io.getProxyUrl(url)+flashvars;
+
+// Play .swf file.
+state=gadgets.flash.embedFlash(url, "flashcontainer", {
+swf_version: 6,
+id: "flashid",
+width: 950,
+height: 500
+});
+}
+
+// When gadget first loads, display still photo.
+gadgets.util.registerOnLoadHandler(fetchData);
+</script>
+<div id="main" style="display: none">
+
+<b>Flash preview gadget<p>
+   Enter the name of the project that you want to view<br/><br/>
+    <input type="text"  name="projectname" id="projectname" size="30" maxlength="30" value="DemoProject"/>
+    <input type="submit" name="submit" id="2" value="submit" onclick="runFlash();"/> 
+ <p/> 
+    
+    <br/>
+</div>
+<div id="approval" style="display: none">
+      <a href="#" id="personalize">Personalize this gadget</a>
+    </div>
+
+    <div id="waiting" style="display: none">
+      Please click
+      <a href="#" id="approvaldone">I've approved access</a>
+      once you've approved access to your data.
+    </div>
+
+<!--
+<br/>
+<center>
+</a>
+</center>
+-->
+]]>
+</Content>
+</Module>

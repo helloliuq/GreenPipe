@@ -1,0 +1,52 @@
+<div class="formHead">
+<span class="formTitle">
+<div style="padding:5px" class="ui-widget-header">b</div>
+<h2></h2>
+</span><span style="float:right;margin-right:15px" class="formCtrl"><input style="display:none" value="Reset" type="button" id="reset_b"><input onclick="run();" value="Submit" type="button" id="submit_b"></span>
+<div style="clear:both"></div>
+<span class="formCtrl"><input value="ask for help" style="display:none" type="button" id="helpdisplay_b"><input name="programName" type="hidden" value="b"></span>
+</div><div style="float:left" class="parameters">
+        
+<div class="parameter">
+<div>
+<label for="b_plist" id="for_b_plist" class=" mandatory">plist</label><span class="field_input"><input type="text" id="b_plist" name="b_plist" class="ui-widget-content ui-corner-all form_parameter mandatory" value="value"></span>
+</div>
+</div>
+        
+<div class="parameter">
+<div>
+<label for="b_indir" id="for_b_indir" class=" mandatory">indir</label><span class="field_input"><input type="text" id="b_indir" name="b_indir" class="ui-widget-content ui-corner-all form_parameter mandatory" value="value"></span>
+</div>
+</div>
+        
+<div class="parameter">
+<div>
+<label for="b_outdir" id="for_b_outdir" class=" mandatory">outdir</label><span class="field_input"><input type="text" id="b_outdir" name="b_outdir" class="ui-widget-content ui-corner-all form_parameter mandatory" value="output"></span>
+</div>
+</div>
+        
+<div class="parameter">
+<div>
+<label for="b_nsims" id="for_b_nsims" class=" mandatory">nsims</label><span class="field_input"><input type="text" id="b_nsims" name="b_nsims" class="ui-widget-content ui-corner-all form_parameter mandatory" value="1"></span>
+</div>
+</div>
+        
+<div class="parameter">
+<div>
+<label for="b_st" id="for_b_st" class=" mandatory">st</label><span class="field_input"><input type="text" id="b_st" name="b_st" class="ui-widget-content ui-corner-all form_parameter mandatory" value="100"></span>
+</div>
+</div>
+        
+<div class="parameter">
+<div>
+<label for="b_tui" id="for_b_tui" class=" mandatory">tui</label><span class="field_input"><input type="text" id="b_tui" name="b_tui" class="ui-widget-content ui-corner-all form_parameter mandatory" value="100"></span>
+</div>
+</div>
+        
+<div class="parameter">
+<div>
+<label for="b_coeff" id="for_b_coeff" class=" mandatory">coeff</label><span class="field_input"><input type="text" id="b_coeff" name="b_coeff" class="ui-widget-content ui-corner-all form_parameter mandatory" value="0.1"></span>
+</div>
+</div>
+    
+</div>

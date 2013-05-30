@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="opps" scrolling="true" width="1000" height="600">
+<Require feature="opensocial-0.8" />
+<Require feature="views"/>
+<Require feature="dynamic-height"/>
+<Require feature="pubsub"/>
+<OAuth>
+      <Service>
+        <Request url="http://192.168.103.122:8088/SIDGridPortal/request_token" />
+        <Access url="http://192.168.103.122:8088/SIDGridPortal/access_token" />
+        <Authorization url="http://192.168.103.122:8088/SIDGridPortal/authorize?oauth_callback=http://wwjmac.mcs.anl.gov:8080/gadgets/oauthcallback" />
+      </Service>
+    </OAuth>
+    <Preload authz="oauth" href="http://192.168.103.122:8088/SIDGridPortal/JSON-RPC" />
+</ModulePrefs>
+<Content type="html">
+<![CDATA[
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+<link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/cupertino/jquery-ui.css" rel="stylesheet" />
+
+
+<style>
+            .parameters {
+                width:95%;
+            }
+            .field_input {
+                width:95%;
+            }
+            label {
+                display:block;
+                width:95%;
+                color:gray;
+                margin: 5px 10px 0px;
+                padding: 2px;
+                font-size:62%;
+            }
+            .form_parameter {
+                margin: 0px 10px;
+                padding: 5px;
+                width:95%;
+            }
+            .form_parameter.text {
+                margin-bottom:12px;
+                width:95%;
+                padding: 5px;
+                margin:0px 10px;
+            }
+</style>
+
+
+
+<link href="http://192.168.103.122:8088/SIDGridPortal/css/form.css" type="text/css" rel="stylesheet">
+<link href="http://192.168.103.122:8088/SIDGridPortal/css/mobyle.css" type="text/css" rel="stylesheet">
+<link href="http://192.168.103.122:8088/SIDGridPortal/css/swfupload.css" type="text/css" rel="stylesheet">
+
+<script type="text/javascript" src="http://192.168.103.122:8088/SIDGridPortal/js/jsonrpc.js"></script>
+<script type="text/javascript" src="http://192.168.103.122:8088/SIDGridPortal/js/util.js"></script>
+<script type="text/javascript" src="http://192.168.103.122:8088/SIDGridPortal/js/popup.js"></script>
+<script type="text/javascript" src="http://192.168.103.122:8088/SIDGridPortal/swfupload/swfupload.js"></script>
+<script type="text/javascript" src="http://192.168.103.122:8088/SIDGridPortal/js/swfupload.queue.js"></script>
+<script type="text/javascript" src="http://192.168.103.122:8088/SIDGridPortal/js/fileprogress.js"></script>
+<script type="text/javascript" src="http://192.168.103.122:8088/SIDGridPortal/js/handlers.js"></script>
+<script>
+var username;
+var token = shindig.auth.getSecurityToken();
+username = token.split(':')[0];
+
+function sub_callback(sender, message){
+        proteinName = message.split('/').pop().split('.').shift()
+        if( proteinName.charAt(0) == 'T' && proteinName.length == 5 )
+        {
+            current_val = document.getElementById("oops_plist_data").value
+            if( current_val )
+                document.getElementById("oops_plist_data").value = proteinName + "\n" + document.getElementById("oops_plist_data").value 
+            else
+                document.getElementById("oops_plist_data").value = proteinName
+        }
+}
+
+function getRadioValue(name)
+{
+    for (var i = 0; i < document.getElementsByName(name).length; i++)
+    {
+        if (document.getElementsByName(name)[i].checked)
+        {
+                return document.getElementsByName(name)[i].value;
+        }
+    }
+}
+
+function reset(){
+
+}
+function run(){
+  //document.getElementById("seqinput").className = "loading";
+  var params = new Object();
+  params.javaClass = 'java.util.Hashtable';
+  params.map = {}; 
+
+       var plist = document.getElementById("opps_plist");
+       if (plist != null && plist.value != null && plist.value != "" ){
+        params.map['plist'] = plist.value;
+       }
+    
+       var indir = document.getElementById("opps_indir");
+       if (indir != null && indir.value != null && indir.value != "" ){
+        params.map['indir'] = indir.value;
+       }
+    
+       var outdir = document.getElementById("opps_outdir");
+       if (outdir != null && outdir.value != null && outdir.value != "" ){
+        params.map['outdir'] = outdir.value;
+       }
+    
+       var nsims = document.getElementById("opps_nsims");
+       if (nsims != null && nsims.value != null && nsims.value != "" ){
+        params.map['nsims'] = nsims.value;
+       }
+    
+       var st = document.getElementById("opps_st");
+       if (st != null && st.value != null && st.value != "" ){
+        params.map['st'] = st.value;
+       }
+    
+       var tui = document.getElementById("opps_tui");
+       if (tui != null && tui.value != null && tui.value != "" ){
+        params.map['tui'] = tui.value;
+       }
+    
+       var coeff = document.getElementById("opps_coeff");
+       if (coeff != null && coeff.value != null && coeff.value != "" ){
+        params.map['coeff'] = coeff.value;
+       }
+    
+  
+  //var jsonrpc = new JSONRpcClient("/SIDGridPortal/Old-JSONRPC");
+  var jsonrpc = new JSONRpcClient("http://192.168.103.122:8088/SIDGridPortal/Old-JSONRPC");
+  result = jsonrpc.WorkflowService.runWorkflow(username,"opps", "", "",  params);
+  if( result == null ) {
+    alert("Error submitting workflow; administrators have been notified")
+    return;
+  }
+  gadgets.pubsub.publish("wfhistory_input", "update");
+  
+}
+
+</script>
+<script>
+  window.onload = function() {
+      gadgets.pubsub.subscribe("fileselect", sub_callback);
+     jQuery("input[type='button']").button();
+     gadgets.window.adjustHeight();
+  }
+</script>
+
+<div class="formHead">
+<span class="formTitle">
+<div style="padding:5px" class="ui-widget-header">opps</div>
+<h2></h2>
+</span><span class="formCtrl"><input value="ask for help" style="display:none" type="button" id="helpdisplay_opps"><input name="programName" type="hidden" value="opps"></span>
+</div><div style="float:left;width:70%" class="parameters">
+        
+<div class="parameter">
+<div>
+<label for="opps_plist" id="for_opps_plist" class=" mandatory">plist</label><span class="field_input"><input type="text" id="opps_plist" name="opps_plist" class="ui-widget-content ui-corner-all form_parameter mandatory" value="value"></span>
+</div>
+</div>
+        
+<div class="parameter">
+<div>
+<label for="opps_indir" id="for_opps_indir" class=" mandatory">indir</label><span class="field_input"><input type="text" id="opps_indir" name="opps_indir" class="ui-widget-content ui-corner-all form_parameter mandatory" value="value"></span>
+</div>
+</div>
+        
+<div class="parameter">
+<div>
+<label for="opps_outdir" id="for_opps_outdir" class=" mandatory">outdir</label><span class="field_input"><input type="text" id="opps_outdir" name="opps_outdir" class="ui-widget-content ui-corner-all form_parameter mandatory" value="output"></span>
+</div>
+</div>
+        
+<div class="parameter">
+<div>
+<label for="opps_nsims" id="for_opps_nsims" class=" mandatory">nsims</label><span class="field_input"><input type="text" id="opps_nsims" name="opps_nsims" class="ui-widget-content ui-corner-all form_parameter mandatory" value="1"></span>
+</div>
+</div>
+        
+<div class="parameter">
+<div>
+<label for="opps_st" id="for_opps_st" class=" mandatory">st</label><span class="field_input"><input type="text" id="opps_st" name="opps_st" class="ui-widget-content ui-corner-all form_parameter mandatory" value="100"></span>
+</div>
+</div>
+        
+<div class="parameter">
+<div>
+<label for="opps_tui" id="for_opps_tui" class=" mandatory">tui</label><span class="field_input"><input type="text" id="opps_tui" name="opps_tui" class="ui-widget-content ui-corner-all form_parameter mandatory" value="100"></span>
+</div>
+</div>
+        
+<div class="parameter">
+<div>
+<label for="opps_coeff" id="for_opps_coeff" class=" mandatory">coeff</label><span class="field_input"><input type="text" id="opps_coeff" name="opps_coeff" class="ui-widget-content ui-corner-all form_parameter mandatory" value="0.1"></span>
+</div>
+</div>
+    
+</div><span style="float:left;width:15%" class="formCtrl"><input style="display:none" value="Reset" type="button" id="reset_opps"><input onclick="run();" value="Submit" type="button" id="submit_opps"></span>
+
+]]>
+</Content>
+</Module>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="Run Clustalw Gadgets" scrolling="true" width="1000" height="600" screenshot="http://lsgw.uc.teragrid.org:8080/gadgets/clustalw.JPG"
+  thumbnail="http://lsgw.uc.teragrid.org:8080/gadgets/clustalw-icon.JPG">
+<Require feature="opensocial-0.8" />
+<Require feature="views"/>
+<Require feature="dynamic-height"/>
+
+<OAuth>
+      <Service>
+        <Request url="http://lsgw.uc.teragrid.org:8080/jobsubportlets/request_token" />
+        <Access url="http://lsgw.uc.teragrid.org:8080/jobsubportlets/access_token" />
+        <Authorization url="http://lsgw.uc.teragrid.org:8080/jobsubportlets/authorize?oauth_callback=http://lsgw.uc.teragrid.org:8080/gadgets/oauthcallback" />
+      </Service>
+    </OAuth>
+    <Preload authz="oauth" href="http://lsgw.uc.teragrid.org:8080/jobsubportlets/JSON-RPC" />
+</ModulePrefs>
+<Content type="html">
+<![CDATA[
+
+<link href="http://lsgw.uc.teragrid.org:8080/jobsubportlets/css/test.css" type="text/css" rel="stylesheet">
+<link href="http://lsgw.uc.teragrid.org:8080/jobsubportlets/css/jobSubmission.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="http://lsgw.uc.teragrid.org:8080/jobsubportlets/js/jsonrpc-oauth-io.js"></script>
+<script type="text/javascript" src="http://lsgw.uc.teragrid.org:8080/jobsubportlets/js/util.js"></script>
+<script type="text/javascript" src="http://lsgw.uc.teragrid.org:8080/jobsubportlets/js/popup.js"></script>
+
+<script>
+function $(x) {
+        return document.getElementById(x);
+}
+
+function showOneSection(toshow) {
+        var sections = [ 'main', 'approval', 'waiting' ];
+        for (var i=0; i < sections.length; ++i) {
+          var s = sections[i];
+          var el = $(s);
+          if (s === toshow) {
+            el.style.display = "block";
+          } else {
+            el.style.display = "none";
+          }
+        }
+}
+
+function fetchData() {
+        url = "http://lsgw.uc.teragrid.org:8080/jobsubportlets//JSON-RPC";
+        var params = {};
+        params[gadgets.io.RequestParameters.CONTENT_TYPE] =
+          gadgets.io.ContentType.TEXT;
+        params[gadgets.io.RequestParameters.AUTHORIZATION] =
+          gadgets.io.AuthorizationType.OAUTH;
+        params[gadgets.io.RequestParameters.METHOD] =
+          gadgets.io.MethodType.POST;
+        var data = "{\"id\": 1, \"method\": \"system.listMethods\"}";
+        params[gadgets.io.RequestParameters.POST_DATA]= data;
+        alert('postdata = ' + data);
+        
+        gadgets.io.makeRequest(url, function (response) {
+          var popup = null;
+        alert('oauthApprovalUrl = ' + response.oauthApprovalUrl );
+          if (response.oauthApprovalUrl) {
+            popup = shindig.oauth.popup({
+              destination: response.oauthApprovalUrl,
+              windowOptions: null,
+              onOpen: function() { showOneSection('waiting'); },
+              onClose: function() { fetchData(); }
+            });
+            $('personalize').onclick = popup.createOpenerOnClick();
+            $('approvaldone').onclick = popup.createApprovedOnClick();
+            showOneSection('approval');
+          } else if (response.data) {
+            jsonrpc = new JSONRpcClient("http://lsgw.uc.teragrid.org:8080/jobsubportlets/JSON-RPC");
+            showOneSection('main');
+          } else {
+            var whoops = document.createTextNode(
+                'OAuth error: ' + response.oauthError + ': ' +
+                response.oauthErrorText);
+            $('main').appendChild(whoops);
+            showOneSection('main');
+          }
+        }, params);
+        
+}
+
+var callback = function(result, e) {
+   document.getElementById("seqinput").className = "";
+    alert(result);
+    if(e) {
+        reportError(e);
+    } else {
+        // Continuation - client is ready to use
+    }
+}
+
+function runClustalW(){
+  document.getElementById("seqinput").className = "loading";
+  var params = new Object();
+  params.javaClass = 'java.util.Hashtable';
+  params.map = {};
+  params.map['actions'] = '-align';
+  params.map['quicktree'] = 'fast';
+  params.map['outfile'] = 'OUTPUT';
+  var seqinput = document.getElementById("seqinput");
+  params.map['infile'] = seqinput.value;
+  // Hashtable params
+  result = jsonrpc.JobService.run(callback,'unknown', "clustalw", params);
+}
+
+gadgets.util.registerOnLoadHandler(fetchData);
+
+</script>
+   <div id="main" style="display: none">
+  <h2>
+    <a href="http://bioweb.pasteur.fr/docs/softgen.html#CLUSTALW">Clustalw</a> : Multiple Alignments (<a href="#REFERENCE">Des Higgins</a>)
+  </h2>
+  <BR></BR>
+
+  <INPUT TYPE="button" onclick="runClustalW();" VALUE="Run clustalw"></INPUT>
+
+  <br></br> Sequences File (or Alignment File for Bootstrap and Tree actions) (-infile) (<A HREF="#fmtseq">format</a>)<br></br>
+  <TEXTAREA id="seqinput" NAME = "infile" ROWS = 10 COLS = 50></TEXTAREA><p></p>
+  <br></br>
+  <INPUT NAME="actions" TYPE="HIDDEN" VALUE="-align"></INPUT>
+  <INPUT TYPE="checkbox" NAME="phylip_alig" > Phylip alignment output format (-output)</INPUT>
+  <br></br>
+  Toggle Slow/Fast pairwise alignments (-<A HREF="#quicktree">quicktree</a>) ?
+  <INPUT TYPE="radio" NAME="quicktree" VALUE="slow" CHECKED > Slow</INPUT>
+  <INPUT TYPE="radio" NAME="quicktree" VALUE="fast" > Fast</INPUT>
+  <input type="hidden" name="outfile" value="OUTPUT">
+</div>
+
+<div id="approval" style="display: none">
+    <img src="http://localhost:8080/gadgets/files/samplecontainer/examples/new.gif">
+      <a href="#" id="personalize">Personalize this gadget</a>
+ </div>
+
+ <div id="waiting" style="display: none">
+      Please click
+      <a href="#" id="approvaldone">I've approved access</a>
+      once you've approved access to your data.
+ </div>
+    
+]]>
+</Content>
+</Module>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+    version="2.4">
+
+  <display-name>jason webapp</display-name>
+  <description>
+     sample webapp that uses jason-rpc.
+  </description>
+   <!-- json-rpc -->
+    <servlet>
+      <servlet-name>OldJSONRPCServlet</servlet-name>
+      <servlet-class>com.metaparadigm.jsonrpc.JSONRPCServlet</servlet-class>
+    </servlet>
+    <servlet>
+      <servlet-name>JSONRPCServlet</servlet-name>
+      <servlet-class>org.uc.sidgrid.oauth.MyJSONRPCServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>RequestTokenServlet</servlet-name>
+        <servlet-class>org.uc.sidgrid.oauth.RequestTokenServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AuthorizationServlet</servlet-name>
+        <servlet-class>org.uc.sidgrid.oauth.AuthorizationServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AccessTokenServlet</servlet-name>
+        <servlet-class>org.uc.sidgrid.oauth.AccessTokenServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SimpleAuthServlet</servlet-name>
+        <servlet-class>org.uc.sidgrid.services.SimpleAuthServlet</servlet-class>
+         <init-param>
+          <param-name>UserMainPage</param-name>
+          <param-value>/jsp/createApplication.jsp</param-value>
+        </init-param>
+        <init-param>
+          <param-name>AdminMainPage</param-name>
+          <param-value>/jsp/createApplication.jsp</param-value>
+        </init-param>
+    </servlet>
+    <servlet>
+        <servlet-name>SignUpServlet</servlet-name>
+        <servlet-class>org.uc.sidgrid.services.SignUpServlet</servlet-class>
+    </servlet>
+    <servlet>
+         <servlet-name>FileUploadServlet</servlet-name>
+         <servlet-class>org.uc.sidgrid.services.FileUploadServlet</servlet-class>
+    </servlet>
+    <servlet>
+         <servlet-name>FileDownloadServlet</servlet-name>
+         <servlet-class>org.uc.sidgrid.services.FileDownloadServlet</servlet-class>
+    </servlet>
+    
+   
+   
+    <servlet-mapping>
+      <servlet-name>JSONRPCServlet</servlet-name>
+      <url-pattern>/JSON-RPC</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+      <servlet-name>OldJSONRPCServlet</servlet-name>
+      <url-pattern>/Old-JSONRPC</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RequestTokenServlet</servlet-name>
+        <url-pattern>/request_token</url-pattern>
+    </servlet-mapping>  
+    <servlet-mapping>
+        <servlet-name>AuthorizationServlet</servlet-name>
+        <url-pattern>/authorize</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AccessTokenServlet</servlet-name>
+        <url-pattern>/access_token</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SimpleAuthServlet</servlet-name>
+        <url-pattern>/simpleauth</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SignUpServlet</servlet-name>
+        <url-pattern>/signup</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FileUploadServlet</servlet-name>
+        <url-pattern>/fileupload</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FileDownloadServlet</servlet-name>
+        <url-pattern>/filedownload</url-pattern>
+    </servlet-mapping>
+   
+    <listener>
+  		<listener-class>org.uc.sidgrid.services.ServletInitializer</listener-class>
+ 	</listener>
+    <listener>  
+    	<listener-class>org.uc.sidgrid.services.Jsonlistener</listener-class>
+    </listener>
+   <filter>
+     <filter-name>OAuth Filter</filter-name>
+     <filter-class>org.uc.sidgrid.oauth.AuthCheckFilter</filter-class>
+     <init-param>
+            <param-name>oldrpc</param-name>
+            <param-value>/Old-JSONRPC</param-value>
+     </init-param>
+     <init-param>
+            <param-name>timeout</param-name>
+            <param-value>30</param-value>
+     </init-param>
+     <init-param>
+            <param-name>LoginPage</param-name>
+            <param-value>jsp/login.jsp</param-value>          
+     </init-param>
+    </filter>
+    <filter-mapping>
+      <filter-name>OAuth Filter</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <!-- application related context-param -->
+ 	<context-param>
+  	<param-name>databaseUrl</param-name>
+  	<param-value>jdbc:mysql://localhost/buaa_bio_software</param-value>
+ 	</context-param>
+ 	<context-param>
+  	<param-name>databaseUser</param-name>
+ 	 <param-value>root</param-value>
+ 	</context-param>
+ 	<context-param>
+  	<param-name>databasePassword</param-name>
+  	<param-value>buaanlsde</param-value>
+ 	</context-param>
+        <context-param>
+ 	  <param-name>WebUrl</param-name>
+ 	  <param-value>http://192.168.103.122:8088/SIDGridPortal</param-value>
+ 	</context-param>
+ 	<context-param>
+ 	 <param-name>MobyleXMLPath</param-name>
+ 	 <param-value>./mobylexml</param-value>
+ 	</context-param>
+    <context-param>
+ 	 <param-name>GadgetPath</param-name>
+ 	 <param-value>./portal_deploy/apache-tomcat-5.5.27//webapps/SIDGridGadgets</param-value>
+ 	</context-param>
+ 	 <context-param>
+ 	 <param-name>SidGridDataPath</param-name>
+ 	 <param-value>./portal_deploy/apache-tomcat-5.5.27//webapps/SIDGridGadgets</param-value>
+ 	</context-param>
+</web-app>

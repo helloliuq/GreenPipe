@@ -1,0 +1,1 @@
+$arg.type$ $arg.name$s [] <fixed_array_mapper;files="$arg.value$">;

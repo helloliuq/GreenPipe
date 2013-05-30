@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="JobHistory Gadgets">
+<Require feature="opensocial-0.8" />
+<Require feature="views"/>
+<Require feature="dynamic-height"/>
+<Require feature="pubsub"/>
+</ModulePrefs>
+<Content type="html">
+<![CDATA[
+
+<link href="/SIDGridPortal/gadgets/css/form.css" type="text/css" rel="stylesheet">
+<link href="/SIDGridPortal/gadgets/css/mobyle.css" type="text/css" rel="stylesheet">
+<link href="/SIDGridPortal/gadgets/css/swfupload.css" type="text/css" rel="stylesheet">
+<style type="text/css">
+  table.jobhistory th {
+	notwidth: 90%;
+	font-size: 12px;
+	color: #fff;
+	background-color: #557;
+	height: 24px;
+	margin-left: 10px;
+  }
+  table.jobhistory td {
+	font-size: 10px;
+  }
+  td.detail:hover {
+	color: #0000ff;
+    border: 1px solid #0000ff;
+
+  }
+  .workflow {
+        border: 1px solid #a2a2a2;
+        background-color: #e2e3e3;
+        margin: 2px;
+        padding: 5px;
+
+  }
+ .loading{
+	background-image: url("/SIDGridGadgets/gadgets/images/loading.gif");
+	background-position: center;
+	background-repeat: no-repeat;
+	min-height: 100px;
+}
+
+</style>
+<script type="text/javascript" src="/SIDGridPortal/js/jsonrpc.js"></script>
+<script type="text/javascript" src="/SIDGridPortal/js/util.js"></script>
+<script type="text/javascript" src="/SIDGridPortal/js/popup.js"></script>
+
+<script>
+var totalJobs;
+var jobsPerPage = 15;
+var pageNumber = 1;
+var token = shindig.auth.getSecurityToken();
+user = token.split(':')[0];
+var monthNames = new Array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
+selectedElement = null;
+
+function callback(inputMedia){
+   //console.log("input media url is "+inputMedia+":"+infile.value);
+  expid = inputMedia.expid;
+  expname = inputMedia.expName;
+  refresh();
+}
+
+function sub_callback(sender, message){
+    if( message == "update" )
+        refresh();
+}
+
+function init(){
+    gadgets.rpc.setRelayUrl('..', '/rpc_relay.html', false);
+    //console.log("reading input media urls");
+    gadgets.rpc.register('callback',callback);
+    //var res= gadgets.rpc.call(null, "getInputMedia", callback);
+    gadgets.pubsub.subscribe("wfhistory_input", sub_callback);
+    refresh();
+    //window.setInterval(refresh,5000);
+}
+
+function refresh(){
+    totalJobs=getWfNums(user);
+    var pages = totalJobs/jobsPerPage;
+    updatePageSel(pages);
+    updateWfHistory(pageNumber);
+
+}
+function getWfNums(user){
+  jsonrpc = new JSONRpcClient("/SIDGridPortal/Old-JSON-RPC");
+  result = jsonrpc.WorkflowService.getTotalWfs(user);
+  return result;
+}
+function getWfHistory(user,pageNum){
+  jsonrpc = new JSONRpcClient("/SIDGridPortal/Old-JSON-RPC");
+  result = jsonrpc.WorkflowService.getWorkflowsPerPage(user, pageNum, jobsPerPage);
+  return result;
+}
+function changePage(){
+  var pageSel = document.getElementById("pageSel");
+  pageNumber = pageSel.options[pageSel.selectedIndex].value;
+  updateWfHistory(pageNumber);
+}
+//TODO: can we use dojo.data to build a better datagrid for this?
+function updateWfHistory(newPage){
+  var joblist = getWfHistory(user,newPage);
+  var history=document.getElementById("workflowHistoryX");
+  html = ""
+  for( var i=0; i<joblist.list.length; i++){
+
+    var st = joblist.list[i].status
+    var d = new Date()
+    var createTimeShort = ""
+    if( joblist.list[i].createTime )
+    {
+        parts = joblist.list[i].createTime.split(" ")
+        datestr = parts[0].replace(/-/g,"/")
+        datesecs = Date.parse(datestr)
+        d.setTime( datesecs )
+        createTimeShort = monthNames[parseInt(d.getMonth())] + " " + d.getDate() + " " + parts[1].slice(0,5)
+    }
+
+    if( st === "created" )
+        st = "Waiting"
+    html += "<div class=workflow  onmouseover=\"this.style.background='white';\" onmouseout=\"this.style.background='#e2e3e3';\" onclick=fetchResult(this,\""+joblist.list[i].workflowID+"\")>" + createTimeShort + " - " + joblist.list[i].workflowID.split("-").pop() + "<br>" + st + "</div>"
+  }
+  history.innerHTML = html
+  //check the total job number, if changed, update the pageSel option
+  gadgets.window.adjustHeight()
+}
+function addCell(row, data){
+  var cell_txt = document.createTextNode(data);
+  var cell = document.createElement("td");
+  cell.appendChild(cell_txt);
+  row.appendChild(cell);
+  return cell;
+}
+function updatePageSel(totalPages){
+ var pageSel=document.getElementById("pageSel");
+ // remove the old pageSel
+ while (pageSel.firstChild)
+      pageSel.removeChild(pageSel.firstChild);
+ for(var i=1; i<=totalPages; i++){
+   var option = document.createElement("option");
+   option.value = i;
+   option.text = i;
+   pageSel.appendChild(option);
+ }
+ pageSel.selectedIndex = pageNumber-1
+}
+function fetchResult(el,wfid){
+  jsonrpc = new JSONRpcClient("/SIDGridPortal/Old-JSON-RPC");
+  var dir = jsonrpc.WorkflowService.getWorkDir(user,wfid);
+  gadgets.pubsub.publish("wfselect", user + "," + dir);
+  gadgets.rpc.call(null,"selectTab", null, 1 );
+  if( selectedElement != null )
+  {
+    selectedElement.style.fontWeight = "normal"
+  }
+  el.style.fontWeight = "bold"
+  selectedElement = el
+}
+gadgets.util.registerOnLoadHandler(init);
+</script>
+
+<div>
+   <div style="float:left">
+       Page
+       <select name="pageSel" id="pageSel" onchange="changePage();">
+       </select>
+   </div>
+   <div style="float:right;font-size:10px;"><a href=javascript:refresh()>Refresh</a></div><div style="clear:both"></div>
+   <div id="workflowHistoryX" style="width:100%;"></div>
+</div>
+
+]]>
+</Content>
+</Module>

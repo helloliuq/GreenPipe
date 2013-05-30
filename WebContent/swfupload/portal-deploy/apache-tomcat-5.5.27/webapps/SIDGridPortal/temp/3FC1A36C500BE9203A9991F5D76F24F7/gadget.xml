@@ -1,0 +1,52 @@
+<div class="formHead">
+<span class="formTitle">
+<div style="padding:5px" class="ui-widget-header">opps</div>
+<h2></h2>
+</span><span style="float:right;margin-right:15px" class="formCtrl"><input style="display:none" value="Reset" type="button" id="reset_opps"><input onclick="run();" value="Submit" type="button" id="submit_opps"></span>
+<div style="clear:both"></div>
+<span class="formCtrl"><input value="ask for help" style="display:none" type="button" id="helpdisplay_opps"><input name="programName" type="hidden" value="opps"></span>
+</div><div style="float:left" class="parameters">
+        
+<div class="parameter">
+<div>
+<label for="opps_plist" id="for_opps_plist" class=" mandatory">plist</label><span class="field_input"><input type="text" id="opps_plist" name="opps_plist" class="ui-widget-content ui-corner-all form_parameter mandatory" value="value"></span>
+</div>
+</div>
+        
+<div class="parameter">
+<div>
+<label for="opps_indir" id="for_opps_indir" class=" mandatory">indir</label><span class="field_input"><input type="text" id="opps_indir" name="opps_indir" class="ui-widget-content ui-corner-all form_parameter mandatory" value="value"></span>
+</div>
+</div>
+        
+<div class="parameter">
+<div>
+<label for="opps_outdir" id="for_opps_outdir" class=" mandatory">outdir</label><span class="field_input"><input type="text" id="opps_outdir" name="opps_outdir" class="ui-widget-content ui-corner-all form_parameter mandatory" value="value"></span>
+</div>
+</div>
+        
+<div class="parameter">
+<div>
+<label for="opps_nsims" id="for_opps_nsims" class=" mandatory">nsims</label><span class="field_input"><input type="text" id="opps_nsims" name="opps_nsims" class="ui-widget-content ui-corner-all form_parameter mandatory" value="value"></span>
+</div>
+</div>
+        
+<div class="parameter">
+<div>
+<label for="opps_st" id="for_opps_st" class=" mandatory">st</label><span class="field_input"><input type="text" id="opps_st" name="opps_st" class="ui-widget-content ui-corner-all form_parameter mandatory" value="value"></span>
+</div>
+</div>
+        
+<div class="parameter">
+<div>
+<label for="opps_tui" id="for_opps_tui" class=" mandatory">tui</label><span class="field_input"><input type="text" id="opps_tui" name="opps_tui" class="ui-widget-content ui-corner-all form_parameter mandatory" value="value"></span>
+</div>
+</div>
+        
+<div class="parameter">
+<div>
+<label for="opps_coeff" id="for_opps_coeff" class=" mandatory">coeff</label><span class="field_input"><input type="text" id="opps_coeff" name="opps_coeff" class="ui-widget-content ui-corner-all form_parameter mandatory" value="value"></span>
+</div>
+</div>
+    
+</div>
