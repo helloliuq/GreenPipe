@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 1.1//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+<hibernate-mapping>
+   <class name="org.uc.sidgrid.app.Application" table="application">
+     <id name="Id" column="appId" type="long">
+        <generator class="native"/>
+     </id>
+     <property name="appName"/>
+     <property name="title"/>
+     <property name="xmlDesc" column="xmldesfile" />
+     <property name="status"/>
+     <property name="type" />
+   </class>
+</hibernate-mapping>
